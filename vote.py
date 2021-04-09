@@ -360,8 +360,9 @@ class Vote:
 class STVPoll(Vote):
     def __init__(self, ctx, bot, args):
         super().__init__(ctx, bot, args, f"React to cast a vote for an option, **in order of your preference**. You may vote for **{'multiple' if args.limit == 0 else args.limit}**. "
-                                         f"Reacts will be removed once counted. End the vote with `!close {self.id}`.")
+                                         f"Reacts will be removed once counted.")
         self.winners = args.winners
+        self.desc += f" End the vote with `!close {self.id}`."  # Add after Vote constructor, otherwise id doesn't exist yet
 
     def make_results(self):
         counts = Counter()

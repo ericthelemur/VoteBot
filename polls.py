@@ -35,7 +35,7 @@ class Polls(commands.Cog):
         # Catch any exception, to ensure the bot continues running for other votes
         # and to give error message due to error messages in async blocks not being reported otherwise
         except Exception as e:
-            print(str(e))
+            print(e)
             raise e
 
 
@@ -60,7 +60,7 @@ class Polls(commands.Cog):
         # Catch any exception, to ensure the bot continues running for other votes
         # and to give error message due to error messages in async blocks not being reported otherwise
         except Exception as e:
-            print(str(e))
+            print(e)
             raise e
 
 
@@ -84,7 +84,7 @@ class Polls(commands.Cog):
                 await v.run()
 
         except Exception as e:
-            print(str(e))
+            print(e)
             raise e
 
 
