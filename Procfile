@@ -1,1 +1,1 @@
-web: python votebot.py
+worker: python votebot.py
