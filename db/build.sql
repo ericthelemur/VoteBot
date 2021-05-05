@@ -1,13 +1,20 @@
+CREATE TABLE IF NOT EXISTS Prefix (
+    GuildID INTEGER PRIMARY KEY,
+    Prefix TEXT DEFAULT '+'
+);
+
 CREATE TABLE IF NOT EXISTS Votes (
     VoteID INTEGER PRIMARY KEY AUTOINCREMENT,
     CreatorID INTEGER,
     Question TEXT DEFAULT 'Poll',
-    ResponseLimit INTEGER DEFAULT 0,
+    VoteLimit INTEGER DEFAULT 0,
     GuildID INTEGER NOT NULL,
     ChannelID INTEGER NOT NULL,
     PollStage INTEGER NOT NULL,
-    Type INTEGER NOT NULL
+    Type INTEGER NOT NULL,
+    NumWinners INTEGER DEFAULT 1
 );
+-- Stage: 0 = Created, 1 = Posted, 2 = Reactions added - running, -1 = Finished
 -- Type: 0 = Quick Poll, 1 = Standard Poll, 2 = STV Poll
 
 CREATE TABLE IF NOT EXISTS Options (
@@ -22,7 +29,7 @@ CREATE TABLE IF NOT EXISTS Messages (
     VoteID INTEGER,
     MessageID INTEGER,
     Part INTEGER NOT NULL,
-    PRIMARY KEY (VoteID, MessageID),
+    PRIMARY KEY (MessageID),
     FOREIGN KEY (VoteID) REFERENCES Votes(VoteID) ON DELETE CASCADE
 );
 

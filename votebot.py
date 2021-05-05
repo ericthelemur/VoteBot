@@ -1,28 +1,50 @@
 import os
 import random
+
+import discord
 from discord.ext import commands
-from discord.ext.commands import when_mentioned_or, CommandNotFound
+from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions
 
 from db import db
+from voting import voteDB
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 
+intents = discord.Intents.default()
+intents.reactions = True
+intents.members = True
 
-def get_prefix(bot, message):
-    return when_mentioned_or("+")(bot, message)
-bot = commands.Bot(command_prefix=get_prefix)
+
+def get_prefix(bot, message: discord.Message):
+    prefix = voteDB.getPrefix(message.guild.id)
+    return when_mentioned_or(prefix)(bot, message)
+
+
+bot = commands.Bot(command_prefix=get_prefix, intents=intents)
 
 
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord')
+    await reload_messages()
+
+async def reload_messages():
+    # Load previous messages into cache (so on_reaction_add picks up on them)
+    messages = voteDB.getMessages()
+
+    for vid, gid, cid, mid in messages:
+        guild: discord.Guild = bot.get_guild(gid)
+        channel: discord.TextChannel = guild.get_channel(cid)
+        message: discord.Message = await channel.fetch_message(mid)
+        print("Loading message ", message.id)
 
 
-# Basic test command
-@bot.command(name='roll', help='Simulates rolling dice.')
-async def roll(ctx, number_of_dice: int, number_of_sides: int):
-    dice = [random.choice(range(1, number_of_sides + 1)) for _ in range(number_of_dice)]
-    await ctx.send(', '.join(map(str, dice)) + f": %d" % sum(dice))
+# Prefix set command
+@has_permissions(administrator=True)
+@bot.command(name='prefix', help='Changes prefix on the server')
+async def prefix(ctx, prefix: str):
+    voteDB.setPrefix(ctx.guild.id, prefix)
+    await ctx.send(f"Prefix changed to `{prefix}`")
 
 
 @bot.event
@@ -39,9 +61,6 @@ async def on_command_error(ctx, error):
     elif hasattr(error, "original"):
         raise error.original
     else: raise error
-
-    # if isinstance(error, commands.errors.CheckFailure):
-    #     await ctx.send('You do not have the correct role for this command.')
 
 
 # Load poll functionality

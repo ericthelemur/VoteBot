@@ -1,15 +1,20 @@
 from discord.ext import commands
 from discord.ext.commands import Context
 
-from voting import vote
-from voting.vote import symbols, running_votes
+from voting import voteDB
+from voting.symbols import symbols
 from parsers import *
 
 
 # Main poll class, mainly a wrapper around Vote
+from voting.vote_manager import VoteManager
+
+
 class Polls(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.vm = VoteManager(bot)
+
 
     @commands.command(name="createpoll", aliases=["poll", "secretpoll"], help=poll_parser.format_help())
     async def create_poll(self, ctx: Context, *options):
@@ -25,8 +30,9 @@ class Polls(commands.Cog):
             # Send feedback or run vote
             if isinstance(args, str): await ctx.send(args)
             else:
-                v = vote.Vote(ctx, self.bot, args)
-                await v.run()
+                # v = vote.Vote(ctx, self.bot, args)
+                # await v.run()
+                await self.vm.std_vote(ctx, args)
 
         # Catch any exception, to ensure the bot continues running for other votes
         # and to give error message due to error messages in async blocks not being reported otherwise
@@ -50,8 +56,7 @@ class Polls(commands.Cog):
             if isinstance(args, str):
                 await ctx.send(args)
             else:
-                v = vote.QuickPoll(ctx, args)
-                await v.run()
+                await self.vm.quick_poll(ctx, args)
 
         # Catch any exception, to ensure the bot continues running for other votes
         # and to give error message due to error messages in async blocks not being reported otherwise
@@ -85,16 +90,20 @@ class Polls(commands.Cog):
 
 
     @commands.command(name="close", aliases=["closepoll", "closevote"], help="Ends a poll with ID `pid`")
-    async def close_poll(self, ctx: Context, pid: int):
-        print("Closing", pid)
+    async def close_poll(self, ctx: Context, vid: int):
+        if voteDB.allowedEnd(vid, ctx.author.id):
+            await self.vm.close(vid)
+        else: await ctx.send("You cannot end this poll")
 
-        if pid in running_votes:    # Finds poll in polls
-            v = running_votes[pid]
-            if ctx.author == v.creator:   # Has perms
-                v.end()
-
-            else: await ctx.send("You are not allowed to cancel this poll")
-        else: await ctx.send("This poll does not exist")
+        # print("Closing", pid)
+        #
+        # if pid in running_votes:    # Finds poll in polls
+        #     v = running_votes[pid]
+        #     if ctx.author == v.creator:   # Has perms
+        #         v.end()
+        #
+        #     else: await ctx.send("You are not allowed to cancel this poll")
+        # else: await ctx.send("This poll does not exist")
 
     # TODO Get vote # cmd
     # @commands.command(name="dump")
@@ -109,6 +118,14 @@ class Polls(commands.Cog):
     #     except Exception as e:
     #         print(e)
 
+
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction, user):
+        if user.bot: return
+        await self.vm.on_reaction_add(reaction, user)
+
+
 # Register module with bot
 def setup(bot):
     bot.add_cog(Polls(bot))
+
