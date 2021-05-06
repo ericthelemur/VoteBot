@@ -14,6 +14,7 @@ class PollParser(argparse.ArgumentParser):
 # Creates the parser for a poll command, allowing limit and show options
 poll_parser = PollParser(prog='!poll', description='Runs an anonymous poll of the given options. Use !close <Poll ID> to end this poll.')
 poll_parser.add_argument("title", action="store", type=str, help="Title of the poll")
+win_arg = poll_parser.add_argument("-w", "--winners", dest="winners", action="store", type=int, default=1, help="Number of winners to select")
 poll_parser.add_argument("-l", "--limit", dest="limit", action="store", type=int, default=0, help="Maximum amount of choices per user. 0 allows infinite")
 # poll_parser.add_argument("-s", "--show", dest="hide", action="store_false", help="Hides reactions once counted", required=False)
 opt_arg = poll_parser.add_argument("options", action="store", nargs="*", help="Options in the poll. At least 2 must be given.")
