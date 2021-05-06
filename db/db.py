@@ -1,9 +1,16 @@
-from os.path import isfile
-import os
+from os.path import isfile, exists, join
+from os import makedirs
 from sqlite3 import connect
 
-DB_PATH = "./data/database.db"
-BUILD_PATH = "./db/build.sql"
+DB_DIR = join(".", "data")
+DB_NAME = "database.db"
+DB_PATH = join(DB_DIR, DB_NAME)
+
+if not exists(DB_DIR):
+    makedirs(DB_DIR)
+
+BUILD_PATH = join(".", "db", "build.sql")
+
 
 cxn = connect(DB_PATH, check_same_thread=False)
 cur = cxn.cursor()

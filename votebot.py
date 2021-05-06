@@ -1,12 +1,9 @@
 import os
-import random
-import sys
 
 import discord
 from discord.ext import commands
 from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions, NoPrivateMessage
 
-from db import db
 from voting import voteDB
 
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -14,6 +11,9 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents.default()
 intents.reactions = True
 intents.members = True
+
+if not os.path.exists("data/temp"):
+    os.makedirs("data/temp")
 
 
 def get_prefix(bot, message: discord.Message):
