@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import discord
-from discord import TextChannel
 from discord.ext.commands import Bot
 
 from voting import voteDB

@@ -1,17 +1,12 @@
 import os
 from collections import defaultdict, Counter
-from datetime import datetime
-from math import ceil
-from typing import Optional, Union, Iterable
+from typing import Union
 
 import discord
-from discord import TextChannel
-from discord.ext.commands import Bot, Context
-from overrides import overrides
+from discord.ext.commands import Context
 
 from voting import voteDB, stv
 from voting.symbols import *
-
 from voting.vote_types.std_vote import EmbedData, StdVote
 
 
@@ -40,7 +35,6 @@ class STVVote(StdVote):
         r = voteDB.prefUserVote(vid, user.id, ind, preference)
         return "added vote" if r else "already counted"
 
-    @overrides
     # async def __give_feedback(self, result: str, user: discord.User, index: Union[int, list[int]], vid: int, limit: int) -> None:
     async def give_feedback(self, result, user, index, vid, limit):
         """
