@@ -33,8 +33,8 @@ class VoteManager:
         await stv.create_vote(ctx, args)
 
 
-    async def on_reaction_add(self, reaction: discord.Reaction, user):
-        t = voteDB.getMsgVote(reaction.message.id)
+    async def on_reaction_add(self, r_event: discord.RawReactionActionEvent, emoji: str, message: discord.Message, user: discord.User):
+        t = voteDB.getMsgVote(r_event.message_id)
         if t is None: return
         vid, _, type, _, stage = t
         if stage < 0: return
@@ -42,8 +42,9 @@ class VoteManager:
         v = None
         if type == 1: v = StdVote(self.bot)
         elif type == 2: v = STVVote(self.bot)
+        else: return
 
-        if v: await v.on_react_add(reaction, user, t)
+        if v: await v.on_react_add(emoji, message, user, t)
 
 
     async def close(self, vid):

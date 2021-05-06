@@ -7,6 +7,7 @@ from typing import Optional, Union, Iterable
 import discord
 from discord import TextChannel
 from discord.ext.commands import Bot, Context
+from overrides import overrides
 
 from voting import voteDB, stv
 from voting.symbols import *
@@ -22,7 +23,7 @@ class STVVote(StdVote):
             f"Reacts will be removed once counted."
         await super(STVVote, self).create_vote(ctx, args, desc, type=type)
 
-    def __count_vote(self, ind: int, user: discord.User, vid: int, limit: int) -> str:
+    def count_vote(self, ind: int, user: discord.User, vid: int, limit: int) -> str:
         """
         Counts a vote for ind from user
         :param ind: Index of option chosen
@@ -39,7 +40,9 @@ class STVVote(StdVote):
         r = voteDB.prefUserVote(vid, user.id, ind, preference)
         return "added vote" if r else "already counted"
 
-    async def __give_feedback(self, result: str, user: discord.User, index: Union[int, list[int]], vid: int, limit: int) -> None:
+    @overrides
+    # async def __give_feedback(self, result: str, user: discord.User, index: Union[int, list[int]], vid: int, limit: int) -> None:
+    async def give_feedback(self, result, user, index, vid, limit):
         """
         Sends DM to user with result of reaction
         :param result: str with result of reaction
@@ -55,7 +58,8 @@ class STVVote(StdVote):
         user_votes = [x[0] for x in sorted(voteDB.getUserVotes(vid, user.id), key=lambda x: x[1])]
 
         if result == "added vote":
-            await user.dm_channel.send(f"Poll {vid}: Counted your vote for {symbols[index]} **{options[index]}** at position {user_votes.index(index)+1}")
+            await user.dm_channel.send(f"Poll {vid}: Counted your vote for {symbols[index]} **{options[index]}** at preference {user_votes.index(index)+1}.\n"
+                                       f"Your order: " + ', '.join(symbols[c] for i, c in enumerate(user_votes)))
         elif result == "removed vote":
             await user.dm_channel.send(f"Poll {vid}: Removed your vote for {symbols[index]} **{options[index]}**")
         elif result == "over limit":
@@ -73,7 +77,7 @@ class STVVote(StdVote):
                                        f"your current preferences are:\n\t\t" +
                                        '\n\t\t'.join(f"{i+1}: {symbols[c]} **{options[c]}**" for i, c in enumerate(user_votes)))
 
-    def __make_results(self, vid: int, num_win: int) -> list[Union[discord.File, EmbedData]]:
+    def make_results(self, vid: int, num_win: int) -> list[Union[discord.File, EmbedData]]:
         """
         Makes result list for vote
         :param vid: Vote ID
@@ -91,16 +95,16 @@ class STVVote(StdVote):
         # Convert dict to list
         counts = Counter()
         first_pref = Counter()
-        for uid, ord_dict in user_prefs:
+        for uid, ord_dict in user_prefs.items():
             uv = []
             for k in sorted(ord_dict.keys()):
-                for i in range(len(uv), k, 1):
+                for i in range(len(uv)-1, k, 1):
                     uv.append(0)
                 uv[k] = ord_dict[k]
             counts[tuple(uv)] += 1
             first_pref[uv[0]] += 1
 
-        options = voteDB.getOptions(vid)
+        options = [x[1] for x in voteDB.getOptions(vid)]
         indexes = list(range(len(options)))
         print("Votes parcelled ", counts, first_pref)
         vote = stv.STV(indexes.copy(), counts, num_win)
@@ -108,8 +112,9 @@ class STVVote(StdVote):
         # Make file of votes
         path = os.path.join(TEMP_DATA_PATH, f"{vid}.votes")
         with open(path, "w") as dump_file:
+            print(f"Count: pref1, pref2, pref3,...", file=dump_file)
             for k, v in vote.preferences.items():
-                print(f"{v}: {k}", file=dump_file)
+                print(f"{v}: {', '.join(map(str, k))}", file=dump_file)
 
         winners = vote.run()
         print("STV Run, winners are", winners)
@@ -118,7 +123,7 @@ class STVVote(StdVote):
         first_prefs.sort(key=lambda x: -first_pref[x])
 
         return [discord.File(path), ("STV Winners", [f"{symbols[i]} **{options[i]}**" for i in winners] if winners else ["No winners."], False),
-                self.__list_results(options, first_prefs, first_pref, "First Preference Votes")]
+                self.list_results(options, first_prefs, first_pref, "First Preference Votes")]
 
         # TODO Construct vote tuples
         # counts = Counter()

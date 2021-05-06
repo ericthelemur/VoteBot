@@ -1,9 +1,10 @@
 import os
 import random
+import sys
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions
+from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions, NoPrivateMessage
 
 from db import db
 from voting import voteDB
@@ -16,7 +17,7 @@ intents.members = True
 
 
 def get_prefix(bot, message: discord.Message):
-    prefix = voteDB.getPrefix(message.guild.id)
+    prefix = voteDB.getPrefix(message.guild.id if message.guild else -1)
     return when_mentioned_or(prefix)(bot, message)
 
 
@@ -26,17 +27,12 @@ bot = commands.Bot(command_prefix=get_prefix, intents=intents)
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord')
-    await reload_messages()
+    await resume_posting()
 
-async def reload_messages():
-    # Load previous messages into cache (so on_reaction_add picks up on them)
-    messages = voteDB.getMessages()
 
-    for vid, gid, cid, mid in messages:
-        guild: discord.Guild = bot.get_guild(gid)
-        channel: discord.TextChannel = guild.get_channel(cid)
-        message: discord.Message = await channel.fetch_message(mid)
-        print("Loading message ", message.id)
+async def resume_posting():
+    # TODO
+    pass
 
 
 # Prefix set command
@@ -58,6 +54,8 @@ async def on_error(ctx, err, *args, **kwargs):
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         pass
+    elif isinstance(error, NoPrivateMessage):
+        await ctx.send("Cannot run this command in DMs")
     elif hasattr(error, "original"):
         raise error.original
     else: raise error

@@ -23,26 +23,26 @@ class STV:
         self.report = []
         self.tie_weights = Counter()  # Breaks ties based on number of votes in previous rounds
         self.round_weight = 1
-        print(self.win_quota, self.votes)
+        # print(self.win_quota, self.votes)
 
     def calc_votes(self):
         votes = Counter()
         for pref in self.preferences:
             votes[pref[0]] += self.preferences[pref]
-        print(votes)
+        # print(votes)
         return votes
 
     def run(self):
         while len(self.winners) < self.winner_count:
             self.round_no += 1
-            print("Running round", self.round_no)
+            # print("Running round", self.round_no)
 
             for c in self.choices:
                 self.tie_weights[c] += self.votes[c] * self.round_weight
-            print("Weights", self.round_weight, self.tie_weights)
+            # print("Weights", self.round_weight, self.tie_weights)
 
             self.round()
-            print(self.choices, self.votes, len(self.winners), self.winner_count)
+            # print(self.choices, self.votes, len(self.winners), self.winner_count)
 
             if self.round_no > 1000:
                 print("Way too many rounds, ending...")
@@ -54,7 +54,7 @@ class STV:
     def round(self):
         # If available choices <= winners remaining to allocate, declare all winners
         if len(self.choices) <= self.winner_count - len(self.winners):
-            print(f"Only {len(self.choices)} choices remaining, and {self.winner_count - len(self.winners)} places")
+            # print(f"Only {len(self.choices)} choices remaining, and {self.winner_count - len(self.winners)} places")
             self.winners += self.choices
         else:
             over_quota = []
@@ -69,21 +69,21 @@ class STV:
                 choice = max(over_quota, key=lambda x: (self.votes[x], self.tie_weights[x], random.random()))   # Pick by votes, then previous round's votes, then random
                 self.winners.append(choice)
                 surplus = self.votes[choice] - self.win_quota
-                print(f"{choice} above threshold, redistributing {surplus} votes")
+                # print(f"{choice} above threshold, redistributing {surplus} votes")
                 self.redistribute_votes(choice, surplus)
-                print(self.winners)
+                # print(self.winners)
 
             # Error checking case, if less votes than options and all votes have been counted, end with the current choice of options
             elif all(c == 0 for c in self.votes.values()):
                 self.winner_count = len(self.winners)
-                print(f"No votes remaining, truncating to {self.winner_count} winners.")
+                # print(f"No votes remaining, truncating to {self.winner_count} winners.")
 
             # Otherwise, eliminate lowest voted choice
             else:
                 lowest = min(self.choices, key=lambda x: (self.votes[x], self.tie_weights[x], random.random()))   # Pick by votes, then previous round's votes, then random
-                print(f"No winners, {lowest} has fewest votes, redistributing {self.votes[lowest]} votes")
+                # print(f"No winners, {lowest} has fewest votes, redistributing {self.votes[lowest]} votes")
                 self.redistribute_votes(lowest, self.votes[lowest])
-                print(self.winners)
+                # print(self.winners)
 
 
     def redistribute_votes(self, choice, surplus):
@@ -117,8 +117,8 @@ class STV:
         for p in remove_pref: self.preferences.pop(p)
         for k, v in adding_pref.items(): self.preferences[k] += v
 
-        print(self.votes)
-        print(self.preferences)
+        # print(self.votes)
+        # print(self.preferences)
 
 
 if __name__ == '__main__':

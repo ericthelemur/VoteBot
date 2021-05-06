@@ -46,11 +46,11 @@ def addMessage(vid: int, mid: int, part: int):
 
 def getMessages(vid: int = None):
     if vid: return db.execute("SELECT GuildID, ChannelID, MessageID "
-                              "FROM Votes JOIN Messages USING (VoteID)"
-                              "WHERE PollStage >= 0 AND  VoteID = ?", vid).fetchall()
+                              "FROM Votes JOIN Messages USING (VoteID) "
+                              "WHERE PollStage > -1 AND VoteID = ?", vid).fetchall()
 
     else: return db.execute("SELECT VoteID, GuildID, ChannelID, MessageID "
-                            "FROM Votes JOIN Messages USING (VoteID)"
+                            "FROM Votes JOIN Messages USING (VoteID) "
                             "WHERE PollStage >= 0 ").fetchall()
 
 
@@ -110,7 +110,7 @@ def getUserVoteCount(vid: int, choice: int = None, uid: int = None):
 
 
 def getUserNextPref(vid: int, uid: int):
-    vs = db.execute("SELECT COALESCE(MAX(Preference), 0) FROM UserVote WHERE VoteID = ? AND UserID = ?", vid, uid).fetchall()
+    vs = db.execute("SELECT COALESCE(MAX(Preference), -1) FROM UserVote WHERE VoteID = ? AND UserID = ?", vid, uid).fetchall()
     return 1 + extract1Val(vs)
 
 

@@ -19,7 +19,7 @@ class StdVote:
         self.bot = bot
         self.remove_reacts = True
 
-    async def on_react_add(self, reaction: discord.Reaction, user: discord.User, t: tuple) -> None:
+    async def on_react_add(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
         """
         Called on reaction add to a poll of this type. Entry point
         :param reaction: Reaction added
@@ -28,19 +28,17 @@ class StdVote:
 
         if user.bot: return
         voteID, part, _, limit, _ = t
-        msg: discord.Message = reaction.message
-        em = str(reaction.emoji)
 
         # Process vote
-        result = self.__react_action(user, em, voteID, part, limit)
-        if self.remove_reacts: await msg.remove_reaction(reaction, user)
+        result = self.react_action(user, emoji, voteID, part, limit)
+        if self.remove_reacts: await msg.remove_reaction(emoji, user)
 
         # Send DM with confirmation
         if result:
-            await self.__give_feedback(result, user, indexes.get(em, -1), voteID, limit)
+            await self.give_feedback(result, user, indexes.get(emoji, -1), voteID, limit)
 
 
-    def __react_action(self, user: discord.User, em: str, voteID: int, part: int, limit: int) -> Union[str, tuple[str, list[int]]]:
+    def react_action(self, user: discord.User, em: str, voteID: int, part: int, limit: int) -> Union[str, tuple[str, list[int]]]:
         """
         Action to be taken when a reaction is added to a poll
         :param user: User voting
@@ -63,10 +61,10 @@ class StdVote:
         if not (part <= float(ind) / 20 < part + 1):
             return ""
         else:
-            return self.__count_vote(ind, user, voteID, limit)
+            return self.count_vote(ind, user, voteID, limit)
 
 
-    def __count_vote(self, ind: int, user: discord.User, vid: int, limit: int) -> str:
+    def count_vote(self, ind: int, user: discord.User, vid: int, limit: int) -> str:
         """
         Counts a vote for ind from user
         :param ind: Index of option chosen
@@ -84,7 +82,8 @@ class StdVote:
         return "added vote" if r else "removed vote"
 
 
-    async def __give_feedback(self, result: str, user: discord.User, index: Union[int, list[int]], vid: int, limit: int) -> None:
+    # async def __give_feedback(self, result: str, user: discord.User, index: Union[int, list[int]], vid: int, limit: int) -> None:
+    async def give_feedback(self, result, user, index, vid, limit):
         """
         Sends DM to user with result of reaction
         :param result: str with result of reaction
@@ -112,7 +111,7 @@ class StdVote:
                 f"Poll {vid}: Your vote for **{options[index]}** was **not counted**. You have voted for the **maximum of {limit}** choices. \n"
                 f"\t\t**Remove a vote** before voting again: \n\t\tYour current choices are:\n\t\t\t" +
                 '\n\t\t\t'.join(f"{symbols[i]} **{options[i]}**" for i, _ in voteDB.getUserVotes(vid, user.id))
-                )
+            )
 
 
 
@@ -140,13 +139,13 @@ class StdVote:
         desc += f" End the vote with `{voteDB.getPrefix(ctx.guild.id)}close {id}`."
 
         # Post messages and add reactions, store stage to allow resume
-        messages = await self.__post_vote(ctx, id, question, desc, options, creator.colour)
+        messages = await self.post_vote(ctx, id, question, desc, options, creator.colour)
         voteDB.updateStage(id, 1)
-        await self.__add_reactions(messages, options)
+        await self.add_reactions(messages, options)
         voteDB.updateStage(id, 2)
 
 
-    async def __post_vote(self, ctx: Context, vid: int, question: str, desc: str, options: list[str], colour) -> list[discord.Message]:
+    async def post_vote(self, ctx: Context, vid: int, question: str, desc: str, options: list[str], colour) -> list[discord.Message]:
         """
         Posts the messages for a vote, 20 options per message, as that is discord's limit on reacts per message
         :param ctx: Context (channel) to send to
@@ -181,7 +180,7 @@ class StdVote:
         return messages
 
 
-    async def __add_reactions(self, messages: list[discord.Message], options: list[str]) -> None:
+    async def add_reactions(self, messages: list[discord.Message], options: list[str]) -> None:
         """
         Adds the reactions to the vote messages, 20 per message due to discord limit
         :param messages: list of posted messages
@@ -205,17 +204,19 @@ class StdVote:
         :param vid: vote ID
         """
         # Get information from DB and discord (messages, etc.)
-        voteDB.updateStage(vid, -1)
-
-        messages = voteDB.getMessages()
-        for vid, gid, cid, mid in messages:
+        print("Making results of vote", vid)
+        messages = voteDB.getMessages(vid)
+        for gid, cid, mid in messages:
             guild: discord.Guild = self.bot.get_guild(gid)
             channel: TextChannel = guild.get_channel(cid)
             message: discord.Message = await channel.fetch_message(mid)
             await message.clear_reactions()
+            print("Clearing reactions from msg", mid)
 
         uid, question, gid, cid, type, num_win = voteDB.getVote(vid)
-        fields = self.__make_results(vid, num_win)
+
+        voteDB.updateStage(vid, -1)
+        fields = self.make_results(vid, num_win)
 
         guild: discord.Guild = self.bot.get_guild(gid)
         channel: TextChannel = guild.get_channel(cid)
@@ -259,8 +260,10 @@ class StdVote:
         else:
             await channel.send(embed=embed)
 
+        voteDB.removeVote(vid)
 
-    def __make_results(self, vid: int, num_win: int) -> list[Union[discord.File, EmbedData]]:
+
+    def make_results(self, vid: int, num_win: int) -> list[Union[discord.File, EmbedData]]:
         """
         Makes result list for vote
         :param vid: Vote ID
@@ -268,16 +271,19 @@ class StdVote:
         """
         votes = dict(voteDB.getUserVoteCount(vid))
         options = [k for k in votes.keys()]
+        # TODO get string instead of int from getUVs for options
 
-        sections = [self.__top_n_results(num_win, options, votes, "Winners")]
-        if num_win < 5: sections.append(self.__top_n_results(5, options, votes))
-        sections.append(self.__list_results(options, range(len(options)), votes))
+        print(votes, options)
+        print(num_win)
+        sections = [self.top_n_results(num_win, options, votes, title="Winners")]
+        if num_win < 5: sections.append(self.top_n_results(5, options, votes))
+        sections.append(self.list_results(options, range(len(options)), votes))
 
         return sections
 
 
     @staticmethod
-    def __list_results(options: list[str], order: Union[Iterable[int], list[int]], votes: dict[int, int], title="Results") -> EmbedData:
+    def list_results(options: list[str], order: Union[Iterable[int], list[int]], votes: dict[int, int], title="Results") -> EmbedData:
         """
         Creates embed parts that list options in order
         :param options: Options to list
@@ -296,7 +302,7 @@ class StdVote:
 
 
     @staticmethod
-    def __top_n_results(n: int, options: list[str], votes: dict[int, int], title=None) -> EmbedData:
+    def top_n_results(n: int, options: list[str], votes: dict[int, int], title=None) -> EmbedData:
         """
         Gets the top n results of options by votes
         :param n: number of top results to get
@@ -304,21 +310,25 @@ class StdVote:
         :param votes: vote data to sort by
         :return: Embed parts
         """
-        print("voteOps", options)
         if title is None: title = f"Top {n}"
-        options = options.copy()
-        options.sort(key=lambda x: -votes.get(x, 0))
+        ops = options.copy()
+        ops.sort(key=lambda x: -votes.get(x, 0))
 
-        picked = []
-        if n < len(options):
-            threshold = -1
-            for op in options:
-                if len(picked) <= 5:
-                    picked.append(op)
-                    threshold = votes.get(op, 0)
-                elif votes.get(op, 0) == threshold:
-                    picked.append(op)
-                else: break
-        else: picked = options
+        # TODO include ties for nth place
+        # print(n, ops)
+        # picked = []
+        # if n < len(ops):
+        #     threshold = -1
+        #     for i in range(len(ops)):
+        #         if len(picked) < 5:
+        #             picked.append(i)
+        #             threshold = votes.get(i, 0)
+        #         elif votes.get(i, 0) == threshold:
+        #             picked.append(i)
+        #         else: break
+        # else: picked = ops
+        # print(picked)
+        n = min(len(ops), n)
+        picked = ops[:n]
 
-        return StdVote.__list_results(options, picked, votes, title)
+        return StdVote.list_results(options, picked, votes, title)
