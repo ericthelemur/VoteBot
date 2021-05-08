@@ -3,7 +3,12 @@ import psycopg2
 
 from os.path import join
 BUILD_PATH = join(".", "db", "build.sql")
-DATABASE_URL = "postgres://localhost"
+
+
+try: DATABASE_URL = os.environ['DATABASE_URL']
+except KeyError: DATABASE_URL = "postgres://localhost"
+
+if DATABASE_URL is None: DATABASE_URL = "postgres://localhost"
 
 conn = psycopg2.connect(DATABASE_URL, user="postgres")
 
