@@ -254,11 +254,8 @@ class StdVote:
             embed.add_field(name=n, value=v, inline=i)
 
         # If file, attach it and delete temp
-        if file:
-            await channel.send(embed=embed, file=file)
-            os.remove(os.path.join(TEMP_DATA_PATH, file.filename))
-        else:
-            await channel.send(embed=embed)
+        if file: await channel.send(embed=embed, file=file)
+        else: await channel.send(embed=embed)
 
         voteDB.removeVote(vid)
 

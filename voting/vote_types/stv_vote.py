@@ -1,3 +1,4 @@
+import io
 import os
 from collections import defaultdict, Counter
 from typing import Union
@@ -104,19 +105,22 @@ class STVVote(StdVote):
         vote = stv.STV(indexes.copy(), counts, num_win)
 
         # Make file of votes
-        path = os.path.join(TEMP_DATA_PATH, f"{vid}.votes")
-        with open(path, "w") as dump_file:
-            print(f"Count: pref1, pref2, pref3,...", file=dump_file)
-            for k, v in vote.preferences.items():
-                print(f"{v}: {', '.join(map(str, k))}", file=dump_file)
+        # path = os.path.join(TEMP_DATA_PATH, f"{vid}.votes")
+        # with open(path, "w") as dump_file:
 
+        file = io.StringIO()
+        print("Count: pref1, pref2, pref3,...", file=file)
+        for k, v in vote.preferences.items():
+            print(f"{v}: {', '.join(map(str, k))}", file=file)
+
+        print(file.getvalue())
         winners = vote.run()
         print("STV Run, winners are", winners)
 
         first_prefs = indexes.copy()
         first_prefs.sort(key=lambda x: -first_pref[x])
 
-        return [discord.File(path), ("STV Winners", [f"{symbols[i]} **{options[i]}**" for i in winners] if winners else ["No winners."], False),
+        return [discord.File(file, filename=f"{vid}.votes"), ("STV Winners", [f"{symbols[i]} **{options[i]}**" for i in winners] if winners else ["No winners."], False),
                 self.list_results(options, first_prefs, first_pref, "First Preference Votes")]
 
         # TODO Construct vote tuples

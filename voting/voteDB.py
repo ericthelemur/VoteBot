@@ -4,68 +4,66 @@ from db import db
 
 
 def setPrefix(gid, prefix):
-    db.execute("INSERT OR REPLACE INTO Prefix (GuildID, Prefix) VALUES (?, ?)", gid, prefix)
+    db.execute("INSERT OR REPLACE INTO Prefix (GuildID, Prefix) VALUES (%s, %s);", gid, prefix)
 
 
-def getPrefix(gid):
-    prefix = db.execute("SELECT Prefix FROM Prefix WHERE GuildID = ?", gid).fetchone()
-    if prefix: prefix = prefix[0]
-    else: prefix = "+"
-    return prefix
+def getPrefix(gid: int):
+    db.execute("INSERT INTO Prefix(GuildID) VALUES (%s) ON CONFLICT DO NOTHING;", gid)
+    prefix = db.executeF1("SELECT Prefix FROM Prefix WHERE GuildID = %s;", gid)
+    return prefix[0]
 
 @db.with_commit
 def addVote(creator: discord.User, question: str, options: list[str], limit: int, guild: discord.Guild, channel: discord.TextChannel, stage: int = 0, type: int = 1, num_win: int = 1) -> int:
-    db.execute("INSERT INTO Votes (CreatorID, Question, VoteLimit, GuildID, ChannelID, PollStage, Type, NumWinners) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-               creator.id, question, limit, guild.id, channel.id, stage, type, num_win)
+    vid = db.executeF1("INSERT INTO Votes (CreatorID, Question, VoteLimit, GuildID, ChannelID, PollStage, Type, NumWinners) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING VoteID;",
+               creator.id, question, limit, guild.id, channel.id, stage, type, num_win)[0]
 
-    vid = db.cur.lastrowid
-    db.multiexec("INSERT INTO Options (VoteID, OptionNumb, Prompt) VALUES (?, ?, ?)", ((vid, i, p) for i, p in enumerate(options)))
+    db.multiexec("INSERT INTO Options (VoteID, OptionNumb, Prompt) VALUES (%s, %s, %s);", ((vid, i, p) for i, p in enumerate(options)))
     return vid
 
 
 @db.with_commit
 def removeVote(vid: int):
-    db.execute("DELETE FROM Votes WHERE VoteID = ?", vid)
+    db.execute("DELETE FROM Votes WHERE VoteID = %s;", vid)
     # Should cascade to others
 
 
 def getVote(vid: int):
-    return db.execute("SELECT CreatorID, Question, GuildID, ChannelID, Type, NumWinners "
-                      "FROM Votes WHERE VoteID = ? ", vid).fetchone()
+    return db.executeF1("SELECT CreatorID, Question, GuildID, ChannelID, Type, NumWinners "
+                      "FROM Votes WHERE VoteID = %s;", vid)
 
 
 def getMsgVote(mid: int):
-    return db.execute("SELECT M.VoteID, Part, Type, VoteLimit, PollStage "
-                      "FROM Messages M JOIN Votes V USING (VoteID) WHERE MessageID = ? ", mid).fetchone()
+    return db.executeF1("SELECT M.VoteID, Part, Type, VoteLimit, PollStage "
+                      "FROM VoteMessages M JOIN Votes V USING (VoteID) WHERE MessageID = %s;", mid)
 
 
 @db.with_commit
 def addMessage(vid: int, mid: int, part: int):
-    db.execute("INSERT INTO Messages (VoteID, MessageID, Part) VALUES (?, ?, ?)", vid, mid, part)
+    db.execute("INSERT INTO VoteMessages (VoteID, MessageID, Part) VALUES (%s, %s, %s);", vid, mid, part)
 
 
 def getMessages(vid: int = None):
-    if vid: return db.execute("SELECT GuildID, ChannelID, MessageID "
-                              "FROM Votes JOIN Messages USING (VoteID) "
-                              "WHERE PollStage > -1 AND VoteID = ?", vid).fetchall()
+    if vid: return db.executeFAll("SELECT GuildID, ChannelID, MessageID "
+                              "FROM Votes JOIN VoteMessages USING (VoteID) "
+                              "WHERE PollStage > -1 AND VoteID = %s;", vid)
 
-    else: return db.execute("SELECT VoteID, GuildID, ChannelID, MessageID "
-                            "FROM Votes JOIN Messages USING (VoteID) "
-                            "WHERE PollStage >= 0 ").fetchall()
+    else: return db.executeFAll("SELECT VoteID, GuildID, ChannelID, MessageID "
+                            "FROM Votes JOIN VoteMessages USING (VoteID) "
+                            "WHERE PollStage >= 0;")
 
 
 @db.with_commit
 def addUserVote(vid: int, uid: int, choice: int, pref: int):
-    db.execute("INSERT INTO UserVote (VoteID, UserID, Choice, Preference) VALUES (?, ?, ?, ?)", vid, uid, choice, pref)
+    db.execute("INSERT INTO UserVote (VoteID, UserID, Choice, Preference) VALUES (%s, %s, %s, %s);", vid, uid, choice, pref)
 
 
 @db.with_commit
 def removeUserVote(vid: int, uid: int, choice: int = None):
     if choice is None:
-        sel = db.execute("SELECT Choice FROM UserVote WHERE UserID = ? AND VoteID = ?", uid, vid).fetchall()
-        db.execute("DELETE FROM UserVote WHERE UserID = ? AND VoteID = ?", uid, vid)
+        sel = db.executeFAll("SELECT Choice FROM UserVote WHERE UserID = %s AND VoteID = %s;", uid, vid)
+        db.execute("DELETE FROM UserVote WHERE UserID = %s AND VoteID = %s;", uid, vid)
         return [s[0] for s in sel]
-    else: db.execute("DELETE FROM UserVote WHERE UserID = ? AND VoteID = ? AND Choice = ?", uid, vid, choice)
+    else: db.execute("DELETE FROM UserVote WHERE UserID = %s AND VoteID = %s AND Choice = %s;", uid, vid, choice)
 
 
 def toggleUserVote(vid: int, uid: int, choice: int, pref: int):
@@ -84,49 +82,49 @@ def prefUserVote(vid: int, uid: int, choice: int, pref: int):
         return False
 
 def getUserVotes(vid: int, uid: int = None):
-    if uid is None: return db.execute("SELECT UserID, Choice, Preference FROM UserVote WHERE VoteID = ? ORDER BY UserID, Choice, Preference", vid).fetchall()
-    else: return db.execute("SELECT Choice, Preference FROM UserVote WHERE VoteID = ? AND UserID = ? ORDER BY Choice, Preference", vid, uid).fetchall()
+    if uid is None: return db.executeFAll("SELECT UserID, Choice, Preference FROM UserVote WHERE VoteID = %s ORDER BY UserID, Choice, Preference;", vid)
+    else: return db.executeFAll("SELECT Choice, Preference FROM UserVote WHERE VoteID = %s AND UserID = %s ORDER BY Choice, Preference;", vid, uid)
 
 
 def getOptions(vid: int):
-    return db.execute("SELECT OptionNumb, Prompt FROM Options WHERE VoteID = ? ORDER BY OptionNumb", vid).fetchall()
+    return db.executeFAll("SELECT OptionNumb, Prompt FROM Options WHERE VoteID = %s ORDER BY OptionNumb;", vid)
 
 
 def getUserVoteCount(vid: int, choice: int = None, uid: int = None):
     if choice is None:
         if uid is None:
-            vs = db.execute("SELECT O.OptionNumb, COALESCE(T.Count, 0) AS Count FROM Options O LEFT JOIN ("
+            vs = db.executeFAll("SELECT O.OptionNumb, COALESCE(T.Count, 0) AS Count FROM Options O LEFT JOIN ("
                             "    SELECT O2.OptionNumb AS Numb, COUNT(*) AS Count "
                             "    FROM Options O2 JOIN UserVote UV ON (UV.VoteID = O2.VoteID AND UV.Choice = O2.OptionNumb) "
-                            "    WHERE O2.VoteID = ? GROUP BY O2.OptionNumb"
-                            ") T ON O.OptionNumb = T.Numb WHERE O.VoteID = ? ORDER BY Count DESC ", vid, vid).fetchall()
+                            "    WHERE O2.VoteID = %s GROUP BY O2.OptionNumb"
+                            ") T ON O.OptionNumb = T.Numb WHERE O.VoteID = %s ORDER BY Count DESC;", vid, vid)
             print(vs)
-        else: vs = db.execute("SELECT COUNT(*) FROM UserVote WHERE VoteID = ? AND UserID = ?", vid, uid).fetchall()
+        else: vs = db.executeFAll("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s;", vid, uid)
     else:
-        if uid is None: vs = db.execute("SELECT COUNT(*) FROM UserVote WHERE VoteID = ? AND Choice = ?", vid, choice).fetchall()
-        else: vs = db.execute("SELECT COUNT(*) FROM UserVote WHERE VoteID = ? AND UserID = ? AND Choice = ?", vid, uid, choice).fetchall() # Of questionable usefulness, but present for completeness
+        if uid is None: vs = db.executeFAll("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND Choice = %s;", vid, choice)
+        else: vs = db.executeFAll("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s AND Choice = %s;", vid, uid, choice) # Of questionable usefulness, but present for completeness
 
     return vs
 
 
 def getUserNextPref(vid: int, uid: int):
-    vs = db.execute("SELECT COALESCE(MAX(Preference), -1) FROM UserVote WHERE VoteID = ? AND UserID = ?", vid, uid).fetchall()
+    vs = db.executeFAll("SELECT COALESCE(MAX(Preference), -1) FROM UserVote WHERE VoteID = %s AND UserID = %s;", vid, uid)
     return 1 + extract1Val(vs)
 
 
 def getUserPref(vid: int, uid: int, choice: int):
-    vs = db.execute("SELECT COALESCE(Preference, -1) FROM UserVote WHERE VoteID = ? AND UserID = ? AND Choice = ?", vid, uid, choice).fetchall()
+    vs = db.executeFAll("SELECT COALESCE(Preference, -1) FROM UserVote WHERE VoteID = %s AND UserID = %s AND Choice = %s;", vid, uid, choice)
     return extract1Val(vs)
 
 
 def allowedEnd(vid: int, uid: int):
-    vs = db.execute("SELECT EXISTS(SELECT 1 FROM Votes WHERE VoteID = ? AND CreatorID = ?)", vid, uid).fetchall()
+    vs = db.executeFAll("SELECT EXISTS(SELECT 1 FROM Votes WHERE VoteID = %s AND CreatorID = %s);", vid, uid)
     return extract1Val(vs, False)
 
 
 @db.with_commit
 def updateStage(vid: int, stage: int):
-    db.execute("UPDATE Votes SET PollStage = ? WHERE VoteID = ?", stage, vid)
+    db.execute("UPDATE Votes SET PollStage = %s WHERE VoteID = %s;", stage, vid)
 
 
 def extract1Row(vals, default=-1):

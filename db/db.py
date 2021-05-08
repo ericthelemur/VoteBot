@@ -1,20 +1,14 @@
-from os.path import isfile, exists, join
-from os import makedirs
-from sqlite3 import connect
+import os
+import psycopg2
 
-DB_DIR = join(".", "data")
-DB_NAME = "database.db"
-DB_PATH = join(DB_DIR, DB_NAME)
-
-if not exists(DB_DIR):
-    makedirs(DB_DIR)
-
+from os.path import join
 BUILD_PATH = join(".", "db", "build.sql")
+DATABASE_URL = "postgres://localhost"
 
+conn = psycopg2.connect(DATABASE_URL, user="postgres")
 
-cxn = connect(DB_PATH, check_same_thread=False)
-cur = cxn.cursor()
-cur.execute("PRAGMA foreign_keys = ON")
+# cxn = connect(DB_PATH, check_same_thread=False)
+cur = conn.cursor()
 
 
 def with_commit(func):
@@ -27,18 +21,20 @@ def with_commit(func):
 
 @with_commit
 def build():
-    if not isfile(BUILD_PATH):
-        with open(DB_PATH, "w"):
-            pass
     scriptexec(BUILD_PATH)
 
 
+def close():
+    cur.close()
+    conn.close()
+
+
 def commit():
-    cxn.commit()
+    conn.commit()
 
 
 def close():
-    cxn.close()
+    conn.close()
 
 
 def field(command, *values):
@@ -70,11 +66,21 @@ def execute(command, *values):
     return cur.execute(command, tuple(values))
 
 
+def executeF1(command, *values):
+    cur.execute(command, tuple(values))
+    return cur.fetchone()
+
+
+def executeFAll(command, *values):
+    cur.execute(command, tuple(values))
+    return cur.fetchall()
+
+
 def multiexec(command, valueset):
     return cur.executemany(command, valueset)
 
 
 def scriptexec(path):
     with open(path, "r", encoding="utf-8") as script:
-        cur.executescript(script.read())
-    print("Ran", path)
+        cur.execute(script.read())
+    print("PG Ran", path)
