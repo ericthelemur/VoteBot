@@ -107,6 +107,10 @@ def getUserVoteCount(vid: int, choice: int = None, uid: int = None):
     return vs
 
 
+def getVoterCount(vid: int):
+    return db.executeF1("SELECT COUNT(DISTINCT UserID) FROM Votes V JOIN UserVote UV USING (VoteID) WHERE VoteID = %s", vid)[0]
+
+
 def getUserNextPref(vid: int, uid: int):
     vs = db.executeFAll("SELECT COALESCE(MAX(Preference), -1) FROM UserVote WHERE VoteID = %s AND UserID = %s;", vid, uid)
     return 1 + extract1Val(vs)

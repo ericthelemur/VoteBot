@@ -35,8 +35,6 @@ class Polls(commands.Cog):
             # Send feedback or run vote
             if isinstance(args, str): await ctx.send(args)
             else:
-                # v = vote.Vote(ctx, self.bot, args)
-                # await v.run()
                 await self.vm.std_vote(ctx, args)
 
         # Catch any exception, to ensure the bot continues running for other votes
@@ -88,8 +86,6 @@ class Polls(commands.Cog):
             args = run_parser(stv_parser, options, extra_checks)
             if isinstance(args, str): await ctx.send(args)
             else:
-                # v = vote.STVPoll(ctx, self.bot, args)
-                # await v.run()
                 await self.vm.stv_vote(ctx, args)
 
         except Exception as e:
@@ -103,28 +99,18 @@ class Polls(commands.Cog):
             await self.vm.close(vid)
         else: await ctx.send("You cannot end this poll")
 
-        # print("Closing", pid)
-        #
-        # if pid in running_votes:    # Finds poll in polls
-        #     v = running_votes[pid]
-        #     if ctx.author == v.creator:   # Has perms
-        #         v.end()
-        #
-        #     else: await ctx.send("You are not allowed to cancel this poll")
-        # else: await ctx.send("This poll does not exist")
 
-    # TODO Get vote # cmd
-    # @commands.command(name="dump")
-    # async def dump(self, ctx: Context):
-    #     try:
-    #         print("Dumping")
-    #         print(running_votes)
-    #         for vote in running_votes.values():
-    #             print({"id": vote.id,
-    #                    "guild": vote.ctx.guild.id, "channel": vote.ctx.channel.id, "messages": [msg.id for msg in vote.messages],
-    #                    "options": vote.options})
-    #     except Exception as e:
-    #         print(e)
+    @commands.command(name="voters", help="Gets the number of people who have voted in a poll.")
+    async def voters(self, ctx: Context, vid: int):
+        if voteDB.allowedEnd(vid, ctx.author.id):
+            voters = voteDB.getVoterCount(vid)
+            await ctx.send(f"{voters} people have voted so far in vote {vid}.")
+
+
+    @commands.command(name="halt", help="Ends a vote early with no results page.")
+    async def halt(self, ctx: Context, vid: int):
+        if voteDB.allowedEnd(vid, ctx.author.id):
+            await self.vm.halt(vid)
 
 
     @commands.Cog.listener()

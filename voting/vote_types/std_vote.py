@@ -260,6 +260,33 @@ class StdVote:
         voteDB.removeVote(vid)
 
 
+    async def halt(self, vid: int):
+        """
+        Ends vote without results
+        :param vid: vote ID
+        """
+        # Get information from DB and discord (messages, etc.)
+        print("Halting vote", vid)
+        messages = voteDB.getMessages(vid)
+        for gid, cid, mid in messages:
+            guild: discord.Guild = self.bot.get_guild(gid)
+            channel: TextChannel = guild.get_channel(cid)
+            message: discord.Message = await channel.fetch_message(mid)
+            await message.clear_reactions()
+
+        uid, question, gid, cid, type, num_win = voteDB.getVote(vid)
+
+        voteDB.updateStage(vid, -1)
+
+        guild: discord.Guild = self.bot.get_guild(gid)
+        channel: TextChannel = guild.get_channel(cid)
+
+        voteDB.removeVote(vid)
+
+        await channel.send(f"Vote {vid} halted.")
+
+
+
     def make_results(self, vid: int, num_win: int) -> list[Union[discord.File, EmbedData]]:
         """
         Makes result list for vote

@@ -56,6 +56,16 @@ class VoteManager:
         if v: await v.post_results(vid)
 
 
+    async def halt(self, vid):
+        _, _, _, _, type, _ = voteDB.getVote(vid)
+
+        v = None
+        if type == 1: v = StdVote(self.bot)
+        elif type == 2: v = STVVote(self.bot)
+
+        if v: await v.halt(vid)
+
+
 class QuickPoll:
     def __init__(self, ctx, args, desc=None):
         self.ctx = ctx
