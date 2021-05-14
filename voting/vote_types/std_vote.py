@@ -294,20 +294,19 @@ class StdVote:
         :return: List of embed parts
         """
         votes = dict(voteDB.getUserVoteCount(vid))
-        options = [k for k in votes.keys()]
-        # TODO get string instead of int from getUVs for options
+        options = ["" for _ in range(len(votes))]
+        for i, text in voteDB.getOptions(vid):
+            options[i] = text
 
-        print(votes, options)
-        print(num_win)
-        sections = [self.top_n_results(num_win, options, votes, title="Winners")]
-        if num_win < 5: sections.append(self.top_n_results(5, options, votes))
-        sections.append(self.list_results(options, range(len(options)), votes))
+        sections = [StdVote.top_n_results(num_win, options, votes, title="Winners")]
+        if num_win < 5: sections.append(StdVote.top_n_results(5, options, votes))
+        sections.append(StdVote.list_results(options, range(len(options)), votes))
 
         return sections
 
 
     @staticmethod
-    def list_results(options: list[str], order: Union[Iterable[int], list[int]], votes: dict[int, int], title="Results") -> EmbedData:
+    def list_results(options: list[str], order: list[int], votes: dict[int, int], title="Results") -> EmbedData:
         """
         Creates embed parts that list options in order
         :param options: Options to list
@@ -322,6 +321,7 @@ class StdVote:
             start_msg = "As a large number of results, omitting options with zero votes\n"
             if len(order) == 0: return title, [start_msg] + ["All options received 0 votes."], False
 
+        print(order, options, votes)
         return title, [start_msg] + [f"{symbols[i]} **{options[i]}**: **{votes[i]}** votes" for i in order], False
 
 
@@ -334,25 +334,20 @@ class StdVote:
         :param votes: vote data to sort by
         :return: Embed parts
         """
-        if title is None: title = f"Top {n}"
-        ops = options.copy()
-        ops.sort(key=lambda x: -votes.get(x, 0))
 
-        # TODO include ties for nth place
-        # print(n, ops)
-        # picked = []
-        # if n < len(ops):
-        #     threshold = -1
-        #     for i in range(len(ops)):
-        #         if len(picked) < 5:
-        #             picked.append(i)
-        #             threshold = votes.get(i, 0)
-        #         elif votes.get(i, 0) == threshold:
-        #             picked.append(i)
-        #         else: break
-        # else: picked = ops
-        # print(picked)
-        n = min(len(ops), n)
-        picked = ops[:n]
+        order = list(votes.keys())
+        order.sort(key=lambda x: -votes.get(x, 0))
+
+        picked = order[:n]
+        for i in range(len(picked)-1, -1, -1):
+            if votes[picked[i]] == 0: picked.pop(i)
+
+        limit = order[-1]
+        for op in order[n:]:
+            if votes.get(op, 0) == limit:
+                picked.append(op)
+
+        n = min(len(options), n)
+        if title is None: title = f"Top {n}"
 
         return StdVote.list_results(options, picked, votes, title)
