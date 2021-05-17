@@ -122,31 +122,3 @@ class STVVote(StdVote):
 
         return [discord.File(file, filename=f"{vid}.votes"), ("STV Winners", [f"{symbols[i]} **{options[i]}**" for i in winners] if winners else ["No winners."], False),
                 self.list_results(options, first_prefs, first_pref, "First Preference Votes")]
-
-        # TODO Construct vote tuples
-        # counts = Counter()
-        # first_pref_votes = Counter()
-        #
-        # for uv in self.votes.user_votes.values():
-        #     print(uv)
-        #     counts[tuple(uv)] += 1
-        #     first_pref_votes[uv[0]] += 1
-        #
-        # indexes = list(range(len(self.options)))
-        # print("Votes parcelled ", counts, first_pref_votes)
-        # vote = stv.STV(indexes.copy(), counts, self.winners)
-        #
-        # # Make file of votes
-        # path = os.path.join(TEMP_DATA_PATH, f"{self.id}.votes")
-        # with open(path, "w") as dump_file:
-        #     for k, v in vote.preferences.items():
-        #         print(f"{v}: {k}", file=dump_file)
-        #
-        # winners = vote.run()
-        # print("STV Run, winners are", winners)
-        #
-        # first_prefs = indexes.copy()
-        # first_prefs.sort(key=lambda x: -first_pref_votes[x])
-        #
-        # return [discord.File(path), ("STV Winners", [f"{symbols[i]} **{self.options[i]}**" for i in winners] if winners else ["No winners."], False),
-        #         self.list_results(first_prefs, "First Preference Votes", votes=first_pref_votes)]

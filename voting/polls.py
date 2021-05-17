@@ -107,6 +107,21 @@ class Polls(commands.Cog):
             await ctx.send(f"{voters} people have voted so far in vote {vid}.")
 
 
+    @commands.command(name="myvotes", help="Will DM with your current votes for vote `vid`.")
+    async def voters(self, ctx: Context, vid: int):
+        user = ctx.author
+        await user.create_dm()
+
+        options = [x[1] for x in voteDB.getOptions(vid)]
+        uvs = voteDB.getUserVotes(vid, user.id)
+
+        if not uvs: await user.dm_channel.send(f"Poll {vid}: You have no votes so far.")
+        else: await user.dm_channel.send(
+                f"Poll {vid}: Your current votes are:\n\t\t" +
+                '\n\t\t'.join(f"{symbols[i]} **{options[i]}**" for i, _ in uvs)
+            )
+
+
     @commands.command(name="halt", help="Ends a vote early with no results page.")
     async def halt(self, ctx: Context, vid: int):
         if voteDB.allowedEnd(vid, ctx.author.id):

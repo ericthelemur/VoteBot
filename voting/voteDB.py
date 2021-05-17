@@ -1,15 +1,18 @@
+from pprint import pprint
+
 import discord
 
 from db import db
 
 
 def setPrefix(gid, prefix):
-    db.execute("INSERT OR REPLACE INTO Prefix (GuildID, Prefix) VALUES (%s, %s);", gid, prefix)
+    db.execute("INSERT INTO Prefix (GuildID, Prefix) VALUES (%s, %s) ON CONFLICT (GuildID) DO UPDATE SET Prefix = EXCLUDED.Prefix;", gid, prefix)
+    pprint(db.executeFAll("SELECT * FROM Prefix;"))
 
 
 def getPrefix(gid: int):
-    db.execute("INSERT INTO Prefix(GuildID) VALUES (%s) ON CONFLICT DO NOTHING;", gid)
-    prefix = db.executeF1("SELECT Prefix FROM Prefix WHERE GuildID = %s;", gid)
+    prefix = db.executeF1("SELECT COALESCE(Prefix, '+') FROM Prefix WHERE GuildID = %s;", gid)
+    if not prefix: return "+"
     return prefix[0]
 
 @db.with_commit
@@ -34,7 +37,7 @@ def getVote(vid: int):
 
 def getMsgVote(mid: int):
     return db.executeF1("SELECT M.VoteID, Part, Type, VoteLimit, PollStage "
-                      "FROM VoteMessages M JOIN Votes V USING (VoteID) WHERE MessageID = %s;", mid)
+                        "FROM VoteMessages M JOIN Votes V USING (VoteID) WHERE MessageID = %s;", mid)
 
 
 @db.with_commit
@@ -90,21 +93,22 @@ def getOptions(vid: int):
     return db.executeFAll("SELECT OptionNumb, Prompt FROM Options WHERE VoteID = %s ORDER BY OptionNumb;", vid)
 
 
-def getUserVoteCount(vid: int, choice: int = None, uid: int = None):
+def getUserVoteCount(vid: int, choice: int = None, uid: int = None) -> int:
     if choice is None:
         if uid is None:
-            vs = db.executeFAll("SELECT O.OptionNumb, COALESCE(T.Count, 0) AS Count FROM Options O LEFT JOIN ("
+            vs = db.executeF1("SELECT O.OptionNumb, COALESCE(T.Count, 0) AS Count FROM Options O LEFT JOIN ("
                             "    SELECT O2.OptionNumb AS Numb, COUNT(*) AS Count "
                             "    FROM Options O2 JOIN UserVote UV ON (UV.VoteID = O2.VoteID AND UV.Choice = O2.OptionNumb) "
                             "    WHERE O2.VoteID = %s GROUP BY O2.OptionNumb"
                             ") T ON O.OptionNumb = T.Numb WHERE O.VoteID = %s ORDER BY Count DESC;", vid, vid)
             print(vs)
-        else: vs = db.executeFAll("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s;", vid, uid)
+        else: vs = db.executeF1("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s;", vid, uid)
     else:
-        if uid is None: vs = db.executeFAll("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND Choice = %s;", vid, choice)
-        else: vs = db.executeFAll("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s AND Choice = %s;", vid, uid, choice) # Of questionable usefulness, but present for completeness
+        if uid is None: vs = db.executeF1("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND Choice = %s;", vid, choice)
+        else: vs = db.executeF1("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s AND Choice = %s;", vid, uid, choice) # Of questionable usefulness, but present for completeness
 
-    return vs
+    if vs: return vs[0]
+    else: return 0
 
 
 def getVoterCount(vid: int):

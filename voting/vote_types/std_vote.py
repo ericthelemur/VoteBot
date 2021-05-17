@@ -74,6 +74,7 @@ class StdVote:
         :return: feedback result
         """
         users_votes = voteDB.getUserVoteCount(vid, uid=user.id)
+        print(users_votes)
         if limit and users_votes >= limit:
             return "over limit"
 
