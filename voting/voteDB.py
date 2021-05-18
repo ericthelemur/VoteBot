@@ -1,4 +1,5 @@
 from pprint import pprint
+from typing import Union
 
 import discord
 
@@ -93,15 +94,15 @@ def getOptions(vid: int):
     return db.executeFAll("SELECT OptionNumb, Prompt FROM Options WHERE VoteID = %s ORDER BY OptionNumb;", vid)
 
 
-def getUserVoteCount(vid: int, choice: int = None, uid: int = None) -> int:
+def getUserVoteCount(vid: int, choice: int = None, uid: int = None) -> Union[int, list]:
     if choice is None:
         if uid is None:
-            vs = db.executeF1("SELECT O.OptionNumb, COALESCE(T.Count, 0) AS Count FROM Options O LEFT JOIN ("
+            return db.executeFAll("SELECT O.OptionNumb, COALESCE(T.Count, 0) AS Count FROM Options O LEFT JOIN ("
                             "    SELECT O2.OptionNumb AS Numb, COUNT(*) AS Count "
                             "    FROM Options O2 JOIN UserVote UV ON (UV.VoteID = O2.VoteID AND UV.Choice = O2.OptionNumb) "
                             "    WHERE O2.VoteID = %s GROUP BY O2.OptionNumb"
                             ") T ON O.OptionNumb = T.Numb WHERE O.VoteID = %s ORDER BY Count DESC;", vid, vid)
-            print(vs)
+
         else: vs = db.executeF1("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s;", vid, uid)
     else:
         if uid is None: vs = db.executeF1("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND Choice = %s;", vid, choice)
