@@ -273,7 +273,8 @@ class StdVote:
             guild: discord.Guild = self.bot.get_guild(gid)
             channel: TextChannel = guild.get_channel(cid)
             message: discord.Message = await channel.fetch_message(mid)
-            await message.clear_reactions()
+            # await message.clear_reactions()
+            await message.delete()
 
         uid, question, gid, cid, type, num_win = voteDB.getVote(vid)
 

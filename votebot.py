@@ -62,6 +62,6 @@ async def on_command_error(ctx, error):
 
 
 # Load poll functionality
-bot.load_extension("voting.polls")
+bot.load_extension("voting.vote_commands")
 
 bot.run(TOKEN)

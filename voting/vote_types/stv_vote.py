@@ -6,9 +6,10 @@ from typing import Union
 import discord
 from discord.ext.commands import Context
 
-from voting import voteDB, stv
+from voting import voteDB
 from voting.symbols import *
 from voting.vote_types.std_vote import EmbedData, StdVote
+from voting.vote_types import stv
 
 
 class STVVote(StdVote):
