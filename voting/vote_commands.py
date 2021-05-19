@@ -157,6 +157,7 @@ class Voting(commands.Cog):
         emoji = str(reaction.emoji)
 
         guild: discord.Guild = self.bot.get_guild(reaction.guild_id)
+        if not guild: return  # In DM, ignore
         channel: discord.TextChannel = guild.get_channel(reaction.channel_id)
         message: discord.Message = await channel.fetch_message(reaction.message_id)
 
