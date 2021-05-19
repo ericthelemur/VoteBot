@@ -108,7 +108,7 @@ class Polls(commands.Cog):
 
 
     @commands.command(name="myvotes", help="Will DM with your current votes for vote `vid`.")
-    async def voters(self, ctx: Context, vid: int):
+    async def myvotes(self, ctx: Context, vid: int):
         user = ctx.author
         await user.create_dm()
 
