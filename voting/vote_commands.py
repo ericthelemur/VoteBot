@@ -118,7 +118,6 @@ class Voting(commands.Cog):
             await ctx.message.add_reaction("🕐")
             voters = voteDB.getVoterCount(vid)
             await ctx.send(f"{voters} people have voted so far in vote {vid}.")
-            await ctx.message.add_reaction("👍")
             await ctx.message.remove_reaction("🕐", self.bot.user)
 
 
@@ -137,7 +136,6 @@ class Voting(commands.Cog):
                 '\n\t\t'.join(f"{symbols[i]} **{options[i]}**" for i, _ in uvs)
             )
 
-        await ctx.message.add_reaction("👍")
         await ctx.message.remove_reaction("🕐", self.bot.user)
 
 

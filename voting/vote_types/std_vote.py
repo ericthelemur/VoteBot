@@ -9,6 +9,7 @@ from discord.ext.commands import Bot, Context
 
 from voting import voteDB
 from voting.symbols import *
+from voting.voteDB import OverLimitException
 
 EmbedData = tuple[str, list[str], bool]
 
@@ -73,14 +74,19 @@ class StdVote:
         :param limit: vote limit
         :return: feedback result
         """
-        users_votes = voteDB.getUserVoteCount(vid, uid=user.id)
-        print(users_votes)
-        if limit and users_votes >= limit:
-            return "over limit"
+        # users_votes = voteDB.getUserVoteCount(vid, uid=user.id)
+        # print(users_votes)
+        # if limit and users_votes >= limit:
+        #     # return "over limit"
+        #     print("over limit")
 
         preference = voteDB.getUserNextPref(vid, user.id)
-        r = voteDB.toggleUserVote(vid, user.id, ind, preference)
-        return "added vote" if r else "removed vote"
+        try:
+            r = voteDB.toggleUserVote(vid, user.id, ind, preference, limit)
+            return "added vote" if r else "removed vote"
+        except OverLimitException:
+            return "over limit"
+
 
 
     # async def __give_feedback(self, result: str, user: discord.User, index: Union[int, list[int]], vid: int, limit: int) -> None:

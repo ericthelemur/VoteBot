@@ -70,13 +70,19 @@ def removeUserVote(vid: int, uid: int, choice: int = None):
     else: db.execute("DELETE FROM UserVote WHERE UserID = %s AND VoteID = %s AND Choice = %s;", uid, vid, choice)
 
 
-def toggleUserVote(vid: int, uid: int, choice: int, pref: int):
+class OverLimitException(Exception): pass
+
+def toggleUserVote(vid: int, uid: int, choice: int, pref: int, limit: int = None):
     if getUserPref(vid, uid, choice) == -1:
+        if limit and getUserVoteCount(vid, uid=uid) >= limit:
+            raise OverLimitException()
         addUserVote(vid, uid, choice, pref)
         return True
     else:
         removeUserVote(vid, uid, choice)
         return False
+
+
 
 def prefUserVote(vid: int, uid: int, choice: int, pref: int):
     if getUserPref(vid, uid, choice) == -1:
