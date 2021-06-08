@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import Context, Bot
+from discord.ext.commands import Bot
 
 from voting import voteDB
+from react_decorators import *
 from voting.symbols import symbols
 from voting.parsers import *
 
@@ -21,6 +22,7 @@ class Voting(commands.Cog):
 
     @commands.command(name="createpoll", aliases=["poll", "secretpoll"], help=poll_parser.format_help())
     @commands.guild_only()
+    @wait_react
     async def create_poll(self, ctx: Context, *options):
         try:
             print("Parsing args")
@@ -35,10 +37,7 @@ class Voting(commands.Cog):
             # Send feedback or run vote
             if isinstance(args, str): await ctx.send(args)
             else:
-                await ctx.message.add_reaction("🕐")
                 await self.vm.std_vote(ctx, args)
-                await ctx.message.add_reaction("👍")
-                await ctx.message.remove_reaction("🕐", self.bot.user)
 
         # Catch any exception, to ensure the bot continues running for other votes
         # and to give error message due to error messages in async blocks not being reported otherwise
@@ -49,6 +48,7 @@ class Voting(commands.Cog):
 
     @commands.command(name="quickpoll", aliases=["qpoll"], help=("Runs a quick poll.\n" + vis_poll_parser.format_help()))
     @commands.guild_only()
+    @wait_react
     async def create_quick_poll(self, ctx: Context, *options):
         try:
             print("Parsing args")
@@ -63,10 +63,7 @@ class Voting(commands.Cog):
             if isinstance(args, str):
                 await ctx.send(args)
             else:
-                await ctx.message.add_reaction("🕐")
                 await self.vm.quick_poll(ctx, args)
-                await ctx.message.add_reaction("👍")
-                await ctx.message.remove_reaction("🕐", self.bot.user)
 
         # Catch any exception, to ensure the bot continues running for other votes
         # and to give error message due to error messages in async blocks not being reported otherwise
@@ -78,6 +75,7 @@ class Voting(commands.Cog):
 
     @commands.command(name="stvpoll", help=("Runs a STV poll.\n" + stv_parser.format_help()))
     @commands.guild_only()
+    @wait_react
     async def create_stv_poll(self, ctx: Context, *options):
         try:
             print("Parsing args")
@@ -92,10 +90,7 @@ class Voting(commands.Cog):
             args = run_parser(stv_parser, options, extra_checks)
             if isinstance(args, str): await ctx.send(args)
             else:
-                await ctx.message.add_reaction("🕐")
                 await self.vm.stv_vote(ctx, args)
-                await ctx.message.add_reaction("👍")
-                await ctx.message.remove_reaction("🕐", self.bot.user)
 
         except Exception as e:
             print(e)
@@ -103,27 +98,26 @@ class Voting(commands.Cog):
 
 
     @commands.command(name="close", aliases=["closepoll", "closevote"], help="Ends a poll with ID `pid`")
+    @done_react
+    @wait_react
     async def close_poll(self, ctx: Context, vid: int):
         if voteDB.allowedEnd(vid, ctx.author.id):
-            await ctx.message.add_reaction("🕐")
             await self.vm.close(vid)
-            await ctx.message.add_reaction("👍")
-            await ctx.message.remove_reaction("🕐", self.bot.user)
         else: await ctx.send("You cannot end this poll")
 
 
     @commands.command(name="voters", help="Gets the number of people who have voted in a poll.")
+    @wait_react
     async def voters(self, ctx: Context, vid: int):
         if voteDB.allowedEnd(vid, ctx.author.id):
-            await ctx.message.add_reaction("🕐")
             voters = voteDB.getVoterCount(vid)
             await ctx.send(f"{voters} people have voted so far in vote {vid}.")
-            await ctx.message.remove_reaction("🕐", self.bot.user)
 
 
     @commands.command(name="myvotes", help="Will DM with your current votes for vote `vid`.")
+    @wait_react
+    @done_react
     async def myvotes(self, ctx: Context, vid: int):
-        await ctx.message.add_reaction("🕐")
         user = ctx.author
         await user.create_dm()
 
@@ -136,10 +130,10 @@ class Voting(commands.Cog):
                 '\n\t\t'.join(f"{symbols[i]} **{options[i]}**" for i, _ in uvs)
             )
 
-        await ctx.message.remove_reaction("🕐", self.bot.user)
 
 
     @commands.command(name="halt", help="Ends a vote early with no results page.")
+    @wait_react
     async def halt(self, ctx: Context, vid: int):
         if voteDB.allowedEnd(vid, ctx.author.id):
             await ctx.message.add_reaction("🕐")

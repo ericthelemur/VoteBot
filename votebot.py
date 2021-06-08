@@ -2,9 +2,9 @@ import datetime
 import os
 
 import discord
-from discord.ext import commands
-from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions, NoPrivateMessage
+from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions, NoPrivateMessage, Context, Bot
 
+from react_decorators import *
 from voting import voteDB
 
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -22,7 +22,7 @@ def get_prefix(bot, message: discord.Message):
     return when_mentioned_or(prefix)(bot, message)
 
 
-bot = commands.Bot(command_prefix=get_prefix, intents=intents)
+bot = Bot(command_prefix=get_prefix, intents=intents)
 
 
 @bot.event
@@ -46,8 +46,10 @@ async def prefix(ctx, prefix: str):
 
 @has_permissions(administrator=True)
 @bot.command(name="purge", help="Removes messages older than the given number of days. Limited to checking 100 messages per call.")
-async def purge(ctx, days: int, limit: int = 100):
-    date = datetime.datetime.now() - datetime.timedelta(days=days)
+@done_react
+@wait_react
+async def purge(ctx: Context, days: int, limit: int = 100):
+    date = ctx.message.created_at - datetime.timedelta(days=days)
 
     def check(m: discord.Message, deleted=[0]):
         if deleted[0] >= limit: return False
