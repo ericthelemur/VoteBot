@@ -1,3 +1,4 @@
+import datetime
 import os
 
 import discord
@@ -41,6 +42,21 @@ async def resume_posting():
 async def prefix(ctx, prefix: str):
     voteDB.setPrefix(ctx.guild.id, prefix)
     await ctx.send(f"Prefix changed to `{prefix}`")
+
+
+@has_permissions(administrator=True)
+@bot.command(name="purge", help="Removes messages older than the given number of days. Limited to checking 100 messages per call.")
+async def purge(ctx, days: int, limit: int = 100):
+    date = datetime.datetime.now() - datetime.timedelta(days=days)
+
+    def check(m: discord.Message, deleted=[0]):
+        if deleted[0] >= limit: return False
+        r = m.created_at < date
+        if r: deleted[0] += 1
+        return r
+
+    print(f"Purging {limit} messages before {date}.")
+    await ctx.channel.purge(limit=100, check=check)
 
 
 @bot.event
