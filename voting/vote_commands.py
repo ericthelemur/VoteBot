@@ -134,12 +134,10 @@ class Voting(commands.Cog):
 
     @commands.command(name="halt", help="Ends a vote early with no results page.")
     @wait_react
+    @done_react
     async def halt(self, ctx: Context, vid: int):
         if voteDB.allowedEnd(vid, ctx.author.id):
-            await ctx.message.add_reaction("🕐")
             await self.vm.halt(vid)
-            await ctx.message.add_reaction("👍")
-            await ctx.message.remove_reaction("🕐", self.bot.user)
 
 
     @commands.Cog.listener()

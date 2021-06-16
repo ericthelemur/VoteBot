@@ -38,30 +38,20 @@ class VoteManager:
         vid, _, type, _, stage = t
         if stage < 0: return
 
-        v = None
-        if type == 1: v = StdVote(self.bot)
-        elif type == 2: v = STVVote(self.bot)
-        else: return
-
+        v = self.get_vote_type(type)
         if v: await v.on_react_add(emoji, message, user, t)
 
 
     async def close(self, vid):
         _, _, _, _, type, _ = voteDB.getVote(vid)
-
-        v = None
-        if type == 1: v = StdVote(self.bot)
-        elif type == 2: v = STVVote(self.bot)
+        v = self.get_vote_type(type)
 
         if v: await v.post_results(vid)
 
 
     async def halt(self, vid):
         _, _, _, _, type, _ = voteDB.getVote(vid)
-
-        v = None
-        if type == 1: v = StdVote(self.bot)
-        elif type == 2: v = STVVote(self.bot)
+        v = self.get_vote_type(type)
 
         if v: await v.halt(vid)
 
@@ -78,8 +68,7 @@ class QuickPoll:
 
         if desc is None:
             self.desc = f"React to cast a vote for an option, you may vote for **multiple**. Votes will be visible."
-        else:
-            self.desc = desc
+        else: self.desc = desc
 
         print("Created Quick poll")
 

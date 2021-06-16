@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS Votes (
     ChannelID BIGINT NOT NULL,
     PollStage INTEGER NOT NULL,
     Type INTEGER NOT NULL,
-    NumWinners INTEGER DEFAULT 1
+    NumWinners INTEGER DEFAULT 1,
+    CreationDate TIMESTAMP DEFAULT NOW()
 );
 -- Stage: 0 = Created, 1 = Posted, 2 = Reactions added - running, -1 = Finished
 -- Type: 0 = Quick Poll, 1 = Standard Poll, 2 = STV Poll

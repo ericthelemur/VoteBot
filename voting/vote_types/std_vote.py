@@ -18,7 +18,6 @@ class StdVote:
 
     def __init__(self, bot):
         self.bot = bot
-        self.remove_reacts = True
 
     async def on_react_add(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
         """
@@ -32,7 +31,7 @@ class StdVote:
 
         # Process vote
         result = self.react_action(user, emoji, voteID, part, limit)
-        if self.remove_reacts: await msg.remove_reaction(emoji, user)
+        await msg.remove_reaction(emoji, user)
 
         # Send DM with confirmation
         if result:
