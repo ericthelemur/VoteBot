@@ -2,7 +2,7 @@ import datetime
 import os
 
 import discord
-from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions, NoPrivateMessage, Context, Bot
+from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions, NoPrivateMessage, Bot
 
 from react_decorators import *
 from voting import voteDB

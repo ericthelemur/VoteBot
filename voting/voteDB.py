@@ -16,13 +16,17 @@ def getPrefix(gid: int):
     if not prefix: return "+"
     return prefix[0]
 
+
 @db.with_commit
-def addVote(creator: discord.User, question: str, options: list[str], limit: int, guild: discord.Guild, channel: discord.TextChannel, stage: int = 0, type: int = 1, num_win: int = 1) -> int:
+def addVote(creator: discord.User, question: str, options: list[str], limit: int, guild: discord.Guild, channel: discord.TextChannel, stage: int = 0, type: int = 1, num_win: int = 1, title_pre: str = "Poll") -> tuple[int, str]:
+    # noinspection SyntaxError
     vid = db.executeF1("INSERT INTO Votes (CreatorID, Question, VoteLimit, GuildID, ChannelID, PollStage, Type, NumWinners) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING VoteID;",
-               creator.id, question, limit, guild.id, channel.id, stage, type, num_win)[0]
+                       creator.id, question, limit, guild.id, channel.id, stage, type, num_win)[0]
+    title = f"{title_pre} `{vid}`: " + question
+    db.execute("UPDATE Votes SET Question = %s WHERE VoteID = %s", title, vid)
 
     db.multiexec("INSERT INTO Options (VoteID, OptionNumb, Prompt) VALUES (%s, %s, %s);", ((vid, i, p) for i, p in enumerate(options)))
-    return vid
+    return vid, title
 
 
 @db.with_commit
@@ -33,7 +37,7 @@ def removeVote(vid: int):
 
 def getVote(vid: int):
     return db.executeF1("SELECT CreatorID, Question, GuildID, ChannelID, Type, NumWinners "
-                      "FROM Votes WHERE VoteID = %s;", vid)
+                        "FROM Votes WHERE VoteID = %s;", vid)
 
 
 def getMsgVote(mid: int):
@@ -48,12 +52,12 @@ def addMessage(vid: int, mid: int, part: int):
 
 def getMessages(vid: int = None):
     if vid: return db.executeFAll("SELECT GuildID, ChannelID, MessageID "
-                              "FROM Votes JOIN VoteMessages USING (VoteID) "
-                              "WHERE PollStage > -1 AND VoteID = %s;", vid)
+                                  "FROM Votes JOIN VoteMessages USING (VoteID) "
+                                  "WHERE PollStage > -1 AND VoteID = %s;", vid)
 
     else: return db.executeFAll("SELECT VoteID, GuildID, ChannelID, MessageID "
-                            "FROM Votes JOIN VoteMessages USING (VoteID) "
-                            "WHERE PollStage >= 0;")
+                                "FROM Votes JOIN VoteMessages USING (VoteID) "
+                                "WHERE PollStage >= 0;")
 
 
 @db.with_commit
@@ -71,6 +75,7 @@ def removeUserVote(vid: int, uid: int, choice: int = None):
 
 
 class OverLimitException(Exception): pass
+
 
 def toggleUserVote(vid: int, uid: int, choice: int, pref: int, limit: int = None):
     if getUserPref(vid, uid, choice) == -1:
@@ -104,15 +109,15 @@ def getUserVoteCount(vid: int, choice: int = None, uid: int = None) -> Union[int
     if choice is None:
         if uid is None:
             return db.executeFAll("SELECT O.OptionNumb, COALESCE(T.Count, 0) AS Count FROM Options O LEFT JOIN ("
-                            "    SELECT O2.OptionNumb AS Numb, COUNT(*) AS Count "
-                            "    FROM Options O2 JOIN UserVote UV ON (UV.VoteID = O2.VoteID AND UV.Choice = O2.OptionNumb) "
-                            "    WHERE O2.VoteID = %s GROUP BY O2.OptionNumb"
-                            ") T ON O.OptionNumb = T.Numb WHERE O.VoteID = %s ORDER BY Count DESC;", vid, vid)
+                                  "    SELECT O2.OptionNumb AS Numb, COUNT(*) AS Count "
+                                  "    FROM Options O2 JOIN UserVote UV ON (UV.VoteID = O2.VoteID AND UV.Choice = O2.OptionNumb) "
+                                  "    WHERE O2.VoteID = %s GROUP BY O2.OptionNumb"
+                                  ") T ON O.OptionNumb = T.Numb WHERE O.VoteID = %s ORDER BY Count DESC;", vid, vid)
 
         else: vs = db.executeF1("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s;", vid, uid)
     else:
         if uid is None: vs = db.executeF1("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND Choice = %s;", vid, choice)
-        else: vs = db.executeF1("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s AND Choice = %s;", vid, uid, choice) # Of questionable usefulness, but present for completeness
+        else: vs = db.executeF1("SELECT COUNT(*) FROM UserVote WHERE VoteID = %s AND UserID = %s AND Choice = %s;", vid, uid, choice)  # Of questionable usefulness, but present for completeness
 
     if vs: return vs[0]
     else: return 0

@@ -1,10 +1,7 @@
-from datetime import datetime
-
 import discord
 from discord.ext.commands import Bot, Context
 
 from voting import voteDB
-from voting.symbols import *
 from voting.vote_types.std_vote import StdVote
 from voting.vote_types.stv_vote import STVVote
 from voting.vote_types.vis_vote import VisibleVote

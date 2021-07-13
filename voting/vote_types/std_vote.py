@@ -13,6 +13,7 @@ from voting.voteDB import OverLimitException
 
 EmbedData = tuple[str, list[str], bool]
 
+
 class StdVote:
     bot: Bot
 
@@ -20,6 +21,7 @@ class StdVote:
         self.bot = bot
         self.remove_reactions = True
         self.clear = True
+        self.order_text = "Any"
 
     async def on_react_add(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
         """
@@ -88,8 +90,6 @@ class StdVote:
             return "over limit"
 
 
-
-    # async def __give_feedback(self, result: str, user: discord.User, index: Union[int, list[int]], vid: int, limit: int) -> None:
     async def give_feedback(self, result, user, index, vid, limit):
         """
         Sends DM to user with result of reaction
@@ -122,7 +122,7 @@ class StdVote:
 
 
 
-    async def create_vote(self, ctx: Context, args, desc=None, type=1) -> None:
+    async def create_vote(self, ctx: Context, args, desc=None, type=1, title_pre: str = "Anonymous Poll") -> None:
         """
         Creates a vote, entry point.
         :param ctx: Context of vote (channel)
@@ -131,41 +131,44 @@ class StdVote:
         """
         # Extract values
         creator = ctx.author
-        question = args.title
+        title = args.title
         options = args.options
         limit = args.limit
         num_wins = args.winners
 
         # Add to DB
-        id = voteDB.addVote(creator, question, options, limit, ctx.guild, ctx.channel, 0, type, num_wins)
+        id, title = voteDB.addVote(creator, title, options, limit, ctx.guild, ctx.channel, 0, type, num_wins, title_pre)
 
         if desc is None:
-            desc = f"React to cast a vote for an option, you may vote for **{'multiple' if args.limit == 0 else args.limit}**. " \
-                   f"Reacts will be removed once counted."
+            desc = self.vote_summary(args)
         else: desc = desc
         desc += f" End the vote with `{voteDB.getPrefix(ctx.guild.id)}close {id}`."
 
         # Post messages and add reactions, store stage to allow resume
-        messages = await self.post_vote(ctx, id, question, desc, options, creator.colour)
+        messages = await self.post_vote(ctx, id, title, desc, options, creator.colour)
         voteDB.updateStage(id, 1)
         await self.add_reactions(messages, options)
         voteDB.updateStage(id, 2)
 
 
-    async def post_vote(self, ctx: Context, vid: int, question: str, desc: str, options: list[str], colour) -> list[discord.Message]:
+    def vote_summary(self, args):
+        return f"Votes: **{'Hidden' if self.remove_reactions else 'Visible'}** Order: **{self.order_text}** Vote Limit: **{str(args.limit) if args.limit > 0 else 'None'}** Winners: **{args.winners}**\n"\
+
+
+    async def post_vote(self, ctx: Context, vid: int, title: str, desc: str, options: list[str], colour) -> list[discord.Message]:
         """
         Posts the messages for a vote, 20 options per message, as that is discord's limit on reacts per message
         :param ctx: Context (channel) to send to
         :param vid: Vote ID
-        :param question: Vote question
+        :param title: Vote question
         :param desc: Vote description
         :param options: Vote options
         :param colour: Colour of vote embed
         """
         print("Posting")
         # Embed fields can be no longer than 1024 characters, so limit of 50 chars / option and 20 options per field
-        lines = [f"{symbols[i]} {options[i]}" for i in range(len(options))] + [
-            f"\n\n{clear_symbol} Clear all your votes"]
+        lines = [f"{symbols[i]} {options[i]}" for i in range(len(options))]
+        if self.remove_reactions: lines.append(f"\n\n{clear_symbol} Clear all your votes")
 
         messages = []
 
@@ -174,7 +177,7 @@ class StdVote:
         for i in range(0, len(lines), 20):
             limit = min(i + 20, len(lines))
             d = desc if i == 0 else f"Part of poll `{vid}`. Split due to reaction count limit"
-            embed = discord.Embed(title=f"Poll `{vid}`: {question} {f'part {i // 20 + 1}/{max_part}' if max_part > 1 else ''}",
+            embed = discord.Embed(title=f"{title} {f'part {i // 20 + 1}/{max_part}' if max_part > 1 else ''}",
                                   description=d,
                                   colour=colour, timestamp=datetime.utcnow())
 
@@ -249,7 +252,7 @@ class StdVote:
                 split_fields.append((title + f" part {i // 20 + 1}/{max_part}", "\n".join(lines[i:limit]), inline))
 
         # Create embeds, split if embed ends up being too long, shouldn't be necessary with option length limit
-        embed = discord.Embed(title="Results: " + question, colour=creator.colour, timestamp=datetime.utcnow())
+        embed = discord.Embed(title="Results of " + question, colour=creator.colour, timestamp=datetime.utcnow())
         msg_length = 0
         part = 1
         for n, v, i in split_fields:
@@ -257,7 +260,7 @@ class StdVote:
             if msg_length > 4000:   # If too long, send and reset embed
                 await channel.send(embed=embed)
                 part += 1
-                embed = discord.Embed(title=f"Results part{part}: " + question, colour=creator.colour,
+                embed = discord.Embed(title=f"Results part {part} of  " + question, colour=creator.colour,
                                       timestamp=datetime.utcnow())
             embed.add_field(name=n, value=v, inline=i)
 

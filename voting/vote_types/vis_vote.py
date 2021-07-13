@@ -7,12 +7,12 @@ from discord.ext.commands import Context
 
 from voting.symbols import *
 
+
 class VisibleVote(StdVote):
     def __init__(self, bot):
         super().__init__(bot)
         self.remove_reactions = False
         self.clear = False
-
 
     async def on_react_add(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
         if user.bot: return
@@ -42,10 +42,6 @@ class VisibleVote(StdVote):
         return await self.on_react_add(emoji, msg, user, t)
 
 
-    async def create_vote(self, ctx: Context, args, desc=None, type=0) -> None:
-        if desc is not None:
-            f"React to cast a vote for an option. "
-            f"You may vote for **{'multiple' if args.limit == 0 else args.limit}**. "
-            f"Reacts will **not** be removed once counted."
-        await super().create_vote(ctx, args, desc, type=type)
+    async def create_vote(self, ctx: Context, args, desc=None, type=0, title_pre="Visible Poll") -> None:
+        await super().create_vote(ctx, args, desc, type=type, title_pre=title_pre)
 

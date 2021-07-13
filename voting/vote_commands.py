@@ -30,7 +30,7 @@ class Voting(commands.Cog):
             def extra_checks(args):  # Extra checks past the parser's basic ones. These are caught and forwarded in run_parser
                 if len(args.options) < 2 or len(symbols) < len(args.options): raise argparse.ArgumentError(opt_arg, f"Between 2 and {len(symbols)} options must be supplied.")
                 if args.winners <= 0: raise argparse.ArgumentError(win_arg, f"Cannot select less than 1 winner.")
-                if args.limit <= 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
+                if args.limit < 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
                 for op in args.options:
                     if len(op) > 50: raise argparse.ArgumentError(opt_arg, f"Option {op} is too long. Lines can be no longer than 50 characters (current length {len(op)}))")
 
@@ -57,7 +57,7 @@ class Voting(commands.Cog):
             def extra_checks(args):  # Extra checks past the parser's basic ones. These are caught and forwarded in run_parser
                 if len(args.options) < 2 or len(symbols) < len(args.options): raise argparse.ArgumentError(opt_arg, f"Between 2 and {len(symbols)} options must be supplied.")
                 if args.winners <= 0: raise argparse.ArgumentError(win_arg, f"Cannot select less than 1 winner.")
-                if args.limit <= 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
+                if args.limit < 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
                 for op in args.options:
                     if len(op) > 50: raise argparse.ArgumentError(opt_arg, f"Option {op} is too long. Lines can be no longer than 50 characters (current length {len(op)}))")
 
@@ -86,9 +86,9 @@ class Voting(commands.Cog):
             def extra_checks(args):
                 if len(args.options) < 2 or len(symbols) < len(args.options): raise argparse.ArgumentError(opt_arg, f"Between 2 and {len(symbols)} options must be supplied.")
                 if args.winners <= 0: raise argparse.ArgumentError(win_arg, f"Cannot select less than 1 winner.")
-                if args.limit <= 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
+                if args.limit < 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
                 for op in args.options:
-                    if len(op) > 50: raise argparse.ArgumentError(stv_opt_arg, f"Option {op} is too long. Lines can be no longer than 50 characters (current length {len(op)}))")
+                    if len(op) > 50: raise argparse.ArgumentError(opt_arg, f"Option {op} is too long. Lines can be no longer than 50 characters (current length {len(op)}))")
 
             args = run_parser(stv_parser, options, extra_checks)
             if isinstance(args, str): await ctx.send(args)

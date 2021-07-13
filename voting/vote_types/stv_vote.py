@@ -1,5 +1,4 @@
 import io
-import os
 from collections import defaultdict, Counter
 from typing import Union
 
@@ -13,12 +12,12 @@ from voting.vote_types import stv
 
 
 class STVVote(StdVote):
-    async def create_vote(self, ctx: Context, args, desc=None, type=2) -> None:
-        if desc is not None:
-            f"React to cast a vote for an option, **in order of your preference**. "
-            f"You may vote for **{'multiple' if args.limit == 0 else args.limit}**. "
-            f"Reacts will be removed once counted."
-        await super(STVVote, self).create_vote(ctx, args, desc, type=type)
+    def __init__(self, bot):
+        super().__init__(bot)
+        self.order_text = "Preference/Ranked"
+
+    async def create_vote(self, ctx: Context, args, desc=None, type=2, title_pre="STV Poll") -> None:
+        await super(STVVote, self).create_vote(ctx, args, desc, type=type, title_pre=title_pre)
 
     def count_vote(self, ind: int, user: discord.User, vid: int, limit: int) -> str:
         """

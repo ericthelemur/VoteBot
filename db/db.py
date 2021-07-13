@@ -39,10 +39,6 @@ def commit():
     conn.commit()
 
 
-def close():
-    conn.close()
-
-
 def field(command, *values):
     cur.execute(command, tuple(values))
 
