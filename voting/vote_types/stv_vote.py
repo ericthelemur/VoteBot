@@ -14,7 +14,7 @@ from voting.vote_types import stv
 
 class STVVote(StdVote):
     async def create_vote(self, ctx: Context, args, desc=None, type=2) -> None:
-        if desc != None:
+        if desc is not None:
             f"React to cast a vote for an option, **in order of your preference**. "
             f"You may vote for **{'multiple' if args.limit == 0 else args.limit}**. "
             f"Reacts will be removed once counted."
@@ -73,6 +73,7 @@ class STVVote(StdVote):
                                        f"your current preferences are:\n\t\t" +
                                        '\n\t\t'.join(f"{i+1}: {symbols[c]} **{options[c]}**" for i, c in enumerate(user_votes)))
 
+
     def make_results(self, vid: int, num_win: int) -> list[Union[discord.File, EmbedData]]:
         """
         Makes result list for vote
@@ -106,9 +107,6 @@ class STVVote(StdVote):
         vote = stv.STV(indexes.copy(), counts, num_win)
 
         # Make file of votes
-        # path = os.path.join(TEMP_DATA_PATH, f"{vid}.votes")
-        # with open(path, "w") as dump_file:
-
         file = io.StringIO()
         print("Count: pref1, pref2, pref3,...", file=file)
         for k, v in vote.preferences.items():

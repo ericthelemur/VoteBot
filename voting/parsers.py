@@ -15,22 +15,22 @@ class PollParser(argparse.ArgumentParser):
 poll_parser = PollParser(prog='+poll', description='Runs an anonymous poll of the given options. Use +close <Poll ID> to end this poll.')
 poll_parser.add_argument("title", action="store", type=str, help="Title of the poll")
 win_arg = poll_parser.add_argument("-w", "--winners", dest="winners", action="store", type=int, default=1, help="Number of winners to select")
-poll_parser.add_argument("-l", "--limit", dest="limit", action="store", type=int, default=0, help="Maximum amount of choices per user. 0 allows infinite")
-# poll_parser.add_argument("-s", "--show", dest="hide", action="store_false", help="Hides reactions once counted", required=False)
+lim_arg = poll_parser.add_argument("-l", "--limit", dest="limit", action="store", type=int, default=0, help="Maximum amount of choices per user. 0 allows infinite")
 opt_arg = poll_parser.add_argument("options", action="store", nargs="*", help="Options in the poll. At least 2 must be given.")
 
 # Creates the parser for a poll command, allowing limit and show options
-vis_poll_parser = PollParser(prog='+qpoll', description='Runs a quick poll. Votes are visible to all.')
+vis_poll_parser = PollParser(prog='+vpoll', description='Runs a non-anonymous poll. Votes are visible to all. Use +close <Poll ID> to end this poll.')
 vis_poll_parser.add_argument("title", action="store", type=str, help="Title of the poll")
-vis_opt_arg = vis_poll_parser.add_argument("options", action="store", nargs="*", help="Options in the poll. If no options given, options of 'Yes' and 'No' are assumed.")
+vis_poll_parser.add_argument("-w", "--winners", dest="winners", action="store", type=int, default=1, help="Number of winners to select")
+vis_poll_parser.add_argument("-l", "--limit", dest="limit", action="store", type=int, default=0, help="Maximum amount of choices per user. 0 allows infinite")
+vis_poll_parser.add_argument("options", action="store", nargs="*", help="Options in the poll. At least 2 must be given.")
 
 # Creates the parser for a poll command, allowing limit and show options
 stv_parser = PollParser(prog='+stvpoll', description='Runs an STV poll. Use +close <Poll ID> to end this poll.')
 stv_parser.add_argument("title", action="store", type=str, help="Title of the poll")
-stv_win_arg = stv_parser.add_argument("-w", "--winners", dest="winners", action="store", type=int, default=1, help="Number of winners to select")
+stv_parser.add_argument("-w", "--winners", dest="winners", action="store", type=int, default=1, help="Number of winners to select")
 stv_parser.add_argument("-l", "--limit", dest="limit", action="store", type=int, default=0, help="Maximum amount of choices per user. 0 allows infinite. This options should probably not be used with STV.")
-# poll_parser.add_argument("-s", "--show", dest="hide", action="store_false", help="Hides reactions once counted", required=False)
-stv_opt_arg = stv_parser.add_argument("options", action="store", nargs="*", help="Options in the poll")
+stv_parser.add_argument("options", action="store", nargs="*", help="Options in the poll")
 
 
 def run_parser(parser, options, extra_checks):

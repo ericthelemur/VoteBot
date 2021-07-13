@@ -29,7 +29,8 @@ class Voting(commands.Cog):
 
             def extra_checks(args):  # Extra checks past the parser's basic ones. These are caught and forwarded in run_parser
                 if len(args.options) < 2 or len(symbols) < len(args.options): raise argparse.ArgumentError(opt_arg, f"Between 2 and {len(symbols)} options must be supplied.")
-                if args.winners <= 0: raise argparse.ArgumentError(stv_win_arg, f"STV cannot select less than 1 winner.")
+                if args.winners <= 0: raise argparse.ArgumentError(win_arg, f"Cannot select less than 1 winner.")
+                if args.limit <= 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
                 for op in args.options:
                     if len(op) > 50: raise argparse.ArgumentError(opt_arg, f"Option {op} is too long. Lines can be no longer than 50 characters (current length {len(op)}))")
 
@@ -46,24 +47,26 @@ class Voting(commands.Cog):
             raise e
 
 
-    @commands.command(name="quickpoll", aliases=["qpoll"], help=("Runs a quick poll.\n" + vis_poll_parser.format_help()))
+    @commands.command(name="visiblepoll", aliases=["vpoll"], help=("Runs a poll with visible votes.\n" + vis_poll_parser.format_help()))
     @commands.guild_only()
     @wait_react
-    async def create_quick_poll(self, ctx: Context, *options):
+    async def create_visible_poll(self, ctx: Context, *options):
         try:
             print("Parsing args")
 
             def extra_checks(args):  # Extra checks past the parser's basic ones. These are caught and forwarded in run_parser
-                if len(args.options) == 1 or len(args.options) > 20: raise argparse.ArgumentError(vis_opt_arg, f"Either none or between 2 and 20 options must be supplied.")
+                if len(args.options) < 2 or len(symbols) < len(args.options): raise argparse.ArgumentError(opt_arg, f"Between 2 and {len(symbols)} options must be supplied.")
+                if args.winners <= 0: raise argparse.ArgumentError(win_arg, f"Cannot select less than 1 winner.")
+                if args.limit <= 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
                 for op in args.options:
-                    if len(op) > 50: raise argparse.ArgumentError(vis_opt_arg, f"Option {op} is too long. Lines can be no longer than 50 characters (current length {len(op)}))")
+                    if len(op) > 50: raise argparse.ArgumentError(opt_arg, f"Option {op} is too long. Lines can be no longer than 50 characters (current length {len(op)}))")
 
             args = run_parser(vis_poll_parser, options, extra_checks)
             # Send feedback or run vote
             if isinstance(args, str):
                 await ctx.send(args)
             else:
-                await self.vm.quick_poll(ctx, args)
+                await self.vm.visible_poll(ctx, args)
 
         # Catch any exception, to ensure the bot continues running for other votes
         # and to give error message due to error messages in async blocks not being reported otherwise
@@ -81,9 +84,9 @@ class Voting(commands.Cog):
             print("Parsing args")
 
             def extra_checks(args):
-                if len(args.options) < 2 or len(symbols) < len(args.options): raise argparse.ArgumentError(stv_opt_arg, f"Between 2 and {len(symbols)} options must be supplied.")
-                if args.winners <= 0: raise argparse.ArgumentError(stv_win_arg, f"STV cannot select less than 1 winner.")
-
+                if len(args.options) < 2 or len(symbols) < len(args.options): raise argparse.ArgumentError(opt_arg, f"Between 2 and {len(symbols)} options must be supplied.")
+                if args.winners <= 0: raise argparse.ArgumentError(win_arg, f"Cannot select less than 1 winner.")
+                if args.limit <= 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
                 for op in args.options:
                     if len(op) > 50: raise argparse.ArgumentError(stv_opt_arg, f"Option {op} is too long. Lines can be no longer than 50 characters (current length {len(op)}))")
 
@@ -153,6 +156,20 @@ class Voting(commands.Cog):
 
         if user.bot: return
         await self.vm.on_reaction_add(reaction, emoji, message, user)
+
+    @commands.Cog.listener()
+    @commands.guild_only()
+    async def on_raw_reaction_remove(self, reaction: discord.RawReactionActionEvent):
+        user = self.bot.get_user(reaction.user_id)
+        emoji = str(reaction.emoji)
+
+        guild: discord.Guild = self.bot.get_guild(reaction.guild_id)
+        if not guild: return  # In DM, ignore
+        channel: discord.TextChannel = guild.get_channel(reaction.channel_id)
+        message: discord.Message = await channel.fetch_message(reaction.message_id)
+
+        if user.bot: return
+        await self.vm.on_reaction_remove(reaction, emoji, message, user)
 
 
 # Register module with bot

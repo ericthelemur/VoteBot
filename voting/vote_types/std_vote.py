@@ -18,6 +18,8 @@ class StdVote:
 
     def __init__(self, bot):
         self.bot = bot
+        self.remove_reactions = True
+        self.clear = True
 
     async def on_react_add(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
         """
@@ -30,17 +32,22 @@ class StdVote:
         voteID, part, _, limit, _ = t
 
         # Process vote
-        result = self.react_action(user, emoji, voteID, part, limit)
-        await msg.remove_reaction(emoji, user)
+        result = self.react_action(user, emoji, voteID, part, limit, msg)
+        if self.remove_reactions or not result: await msg.remove_reaction(emoji, user)
 
         # Send DM with confirmation
         if result:
             await self.give_feedback(result, user, indexes.get(emoji, -1), voteID, limit)
 
 
-    def react_action(self, user: discord.User, em: str, voteID: int, part: int, limit: int) -> Union[str, tuple[str, list[int]]]:
+    async def on_react_remove(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
+        pass
+
+
+    def react_action(self, user: discord.User, em: str, voteID: int, part: int, limit: int, msg: discord.Message) -> Union[str, tuple[str, list[int]]]:
         """
         Action to be taken when a reaction is added to a poll
+        :param msg:
         :param user: User voting
         :param em: Reaction (option) added
         :param voteID: ID of vote of message
@@ -58,7 +65,7 @@ class StdVote:
             return "clear votes", rem
 
         ind = indexes.get(em, -1)
-        if not (part <= float(ind) / 20 < part + 1):
+        if not (part <= ind < part + 20):
             return ""
         else:
             return self.count_vote(ind, user, voteID, limit)
@@ -73,12 +80,6 @@ class StdVote:
         :param limit: vote limit
         :return: feedback result
         """
-        # users_votes = voteDB.getUserVoteCount(vid, uid=user.id)
-        # print(users_votes)
-        # if limit and users_votes >= limit:
-        #     # return "over limit"
-        #     print("over limit")
-
         preference = voteDB.getUserNextPref(vid, user.id)
         try:
             r = voteDB.toggleUserVote(vid, user.id, ind, preference, limit)
@@ -198,9 +199,10 @@ class StdVote:
             for i in range(i0 * 20, limit):
                 await m.add_reaction(symbols[i])
 
-        # Add clear symbol
-        msg = messages[len(options) // 20]
-        await msg.add_reaction(clear_symbol)
+        if self.clear:
+            # Add clear symbol
+            msg = messages[len(options) // 20]
+            await msg.add_reaction(clear_symbol)
 
 
 
@@ -307,7 +309,7 @@ class StdVote:
 
         sections = [StdVote.top_n_results(num_win, options, votes, title="Winners")]
         if num_win < 5: sections.append(StdVote.top_n_results(5, options, votes))
-        sections.append(StdVote.list_results(options, range(len(options)), votes))
+        sections.append(StdVote.list_results(options, list(range(len(options))), votes))
 
         return sections
 
@@ -347,11 +349,11 @@ class StdVote:
 
         picked = order[:n]
         for i in range(len(picked)-1, -1, -1):
-            if votes[picked[i]] == 0: picked.pop(i)
+            if votes.get(picked[i], 0) == 0: picked.pop(i)
 
-        limit = order[-1]
+        limit = votes.get(picked[-1], 0)
         for op in order[n:]:
-            if votes.get(op, 0) == limit:
+            if votes.get(op, 0) >= limit:
                 picked.append(op)
 
         n = min(len(options), n)

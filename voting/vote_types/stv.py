@@ -1,10 +1,9 @@
 from collections import Counter
 import random
 
-names = ["orange", "pear", "chocolate", "strawberries", "hamburgers"]
-
 # STV implemented according to Scottish STV rules from https://www.opavote.com/methods/scottish-stv-rules
 # Summarized in https://blog.opavote.com/2016/11/plain-english-explanation-of-scottish.html
+# Not good for low numbers fo votes: potentially arbitrary draws at early stages
 
 
 class STV:
@@ -14,7 +13,6 @@ class STV:
         self.preferences = preferences
         self.votes = self.calc_votes()
         self.total_votes = sum(self.votes.values())
-        # self.choices = [c for c in choices if self.votes[c] > 0]
 
         self.winner_count = winner_count
         self.win_quota = (self.total_votes // (self.winner_count + 1)) + 1
@@ -23,7 +21,6 @@ class STV:
         self.report = []
         self.tie_weights = Counter()  # Breaks ties based on number of votes in previous rounds
         self.round_weight = 1
-        # print(self.win_quota, self.votes)
 
     def calc_votes(self):
         votes = Counter()
