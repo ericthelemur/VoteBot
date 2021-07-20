@@ -1,5 +1,7 @@
 import argparse
 
+from discord.ext.commands import ExpectedClosingQuoteError
+
 
 class ParseException(Exception): pass
 
@@ -38,8 +40,6 @@ def run_parser(parser, options, extra_checks):
         args = parser.parse_args(options)
         extra_checks(args)
 
-    except ParseException as e:
-        return f"```{str(e)}```"
-    except argparse.ArgumentError as e:
+    except (ParseException, argparse.ArgumentError) as e:
         return f"```{str(e)}```"
     return args

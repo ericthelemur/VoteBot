@@ -14,7 +14,7 @@ class VisibleVote(StdVote):
         self.remove_reactions = False
         self.clear = False
 
-    async def on_react_add(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
+    async def on_react_add(self, emoji: str, msg: discord.Message, user: discord.Member, t: tuple) -> None:
         if user.bot: return
         voteID, part, _, limit, _ = t
 
@@ -27,7 +27,7 @@ class VisibleVote(StdVote):
             await self.give_feedback(result, user, indexes.get(emoji, -1), voteID, limit)
 
 
-    def react_action(self, user: discord.User, em: str, voteID: int, part: int, limit: int, msg) -> Union[str, tuple[str, list[int]]]:
+    def react_action(self, user: discord.Member, em: str, voteID: int, part: int, limit: int, msg) -> Union[str, tuple[str, list[int]]]:
         if voteID is None: return ""
         if user.bot: return ""
 
@@ -38,7 +38,7 @@ class VisibleVote(StdVote):
             return self.count_vote(ind, user, voteID, limit)
 
 
-    async def on_react_remove(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
+    async def on_react_remove(self, emoji: str, msg: discord.Message, user: discord.Member, t: tuple) -> None:
         return await self.on_react_add(emoji, msg, user, t)
 
 

@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import Bot
+from discord.ext.commands import Bot, has_permissions
 
 from voting import voteDB
 from react_decorators import *
@@ -99,6 +99,35 @@ class Voting(commands.Cog):
             print(e)
             raise e
 
+    @has_permissions(administrator=True)
+    @commands.command(name="roles", help="Reaction roles")
+    @commands.guild_only()
+    @wait_react
+    async def reaction_roles(self, ctx: Context, *options):
+        try:
+            print("Parsing args")
+
+            def extra_checks(args):  # Extra checks past the parser's basic ones. These are caught and forwarded in run_parser
+                if len(args.options) < 1 or len(symbols) < len(args.options): raise argparse.ArgumentError(opt_arg, f"Between 1 and {len(symbols)} roles must be supplied.")
+                if args.limit < 0: raise argparse.ArgumentError(lim_arg, f"Cannot have limit less than 1.")
+                for op in args.options:
+                    if len(op) > 50: raise argparse.ArgumentError(opt_arg, f"Role name {op} is too long. Lines can be no longer than 50 characters (current length {len(op)}))")
+
+                # TODO CHECK ALL ROLES EXIST
+
+            args = run_parser(poll_parser, options, extra_checks)
+            # Send feedback or run vote
+            if isinstance(args, str):
+                await ctx.send(args)
+            else:
+                await self.vm.reaction_roles(ctx, args)
+
+        # Catch any exception, to ensure the bot continues running for other votes
+        # and to give error message due to error messages in async blocks not being reported otherwise
+        except Exception as e:
+            print(e)
+            raise e
+
 
     @commands.command(name="close", aliases=["closepoll", "closevote"], help="Ends a poll with ID `pid`")
     @done_react
@@ -146,7 +175,8 @@ class Voting(commands.Cog):
     @commands.Cog.listener()
     @commands.guild_only()
     async def on_raw_reaction_add(self, reaction: discord.RawReactionActionEvent):
-        user = self.bot.get_user(reaction.user_id)
+        # user = self.bot.get_user(reaction.user_id)
+        user = reaction.member
         emoji = str(reaction.emoji)
 
         guild: discord.Guild = self.bot.get_guild(reaction.guild_id)
@@ -160,10 +190,12 @@ class Voting(commands.Cog):
     @commands.Cog.listener()
     @commands.guild_only()
     async def on_raw_reaction_remove(self, reaction: discord.RawReactionActionEvent):
-        user = self.bot.get_user(reaction.user_id)
+        # user = self.bot.get_user(reaction.user_id)
+        # user = reaction.member
         emoji = str(reaction.emoji)
 
         guild: discord.Guild = self.bot.get_guild(reaction.guild_id)
+        user = guild.get_member(reaction.user_id)
         if not guild: return  # In DM, ignore
         channel: discord.TextChannel = guild.get_channel(reaction.channel_id)
         message: discord.Message = await channel.fetch_message(reaction.message_id)

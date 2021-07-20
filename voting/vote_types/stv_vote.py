@@ -19,7 +19,7 @@ class STVVote(StdVote):
     async def create_vote(self, ctx: Context, args, desc=None, type=2, title_pre="STV Poll") -> None:
         await super(STVVote, self).create_vote(ctx, args, desc, type=type, title_pre=title_pre)
 
-    def count_vote(self, ind: int, user: discord.User, vid: int, limit: int) -> str:
+    def count_vote(self, ind: int, user: discord.Member, vid: int, limit: int) -> str:
         """
         Counts a vote for ind from user
         :param ind: Index of option chosen
@@ -37,7 +37,7 @@ class STVVote(StdVote):
         return "added vote" if r else "already counted"
 
     # async def __give_feedback(self, result: str, user: discord.User, index: Union[int, list[int]], vid: int, limit: int) -> None:
-    async def give_feedback(self, result, user, index, vid, limit):
+    async def give_feedback(self, result, user: discord.Member, index, vid, limit):
         """
         Sends DM to user with result of reaction
         :param result: str with result of reaction

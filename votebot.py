@@ -2,7 +2,8 @@ import datetime
 import os
 
 import discord
-from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions, NoPrivateMessage, Bot
+from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions, NoPrivateMessage, Bot, \
+    ExpectedClosingQuoteError
 
 from react_decorators import *
 from voting import voteDB
@@ -53,12 +54,23 @@ async def purge(ctx: Context, days: int, limit: int = 100):
 
     def check(m: discord.Message, deleted=[0]):
         if deleted[0] >= limit: return False
-        r = m.created_at < date
+        r = m.created_at <= date
         if r: deleted[0] += 1
         return r
 
     print(f"Purging {limit} messages before {date}.")
     await ctx.channel.purge(limit=100, check=check)
+
+
+# VC
+@bot.event
+async def on_voice_state_update(member, before, after):
+    if not before.channel and after.channel:
+        role = discord.utils.get(member.guild.roles, name="talking")
+        await member.add_roles(role)
+    elif before.channel and not after.channel:
+        role = discord.utils.get(member.guild.roles, name="talking")
+        await member.remove_roles(role)
 
 
 @bot.event
@@ -74,6 +86,8 @@ async def on_command_error(ctx, error):
         pass
     elif isinstance(error, NoPrivateMessage):
         await ctx.send("Cannot run this command in DMs")
+    elif isinstance(error, ExpectedClosingQuoteError):
+        await ctx.send(f"Mismatching quotes, {str(error)}")
     elif hasattr(error, "original"):
         raise error.original
     else: raise error

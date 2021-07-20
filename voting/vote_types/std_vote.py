@@ -22,8 +22,9 @@ class StdVote:
         self.remove_reactions = True
         self.clear = True
         self.order_text = "Any"
+        self.close_desc = True
 
-    async def on_react_add(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
+    async def on_react_add(self, emoji: str, msg: discord.Message, user: discord.Member, t: tuple) -> None:
         """
         Called on reaction add to a poll of this type. Entry point
         :param reaction: Reaction added
@@ -42,11 +43,11 @@ class StdVote:
             await self.give_feedback(result, user, indexes.get(emoji, -1), voteID, limit)
 
 
-    async def on_react_remove(self, emoji: str, msg: discord.Message, user: discord.User, t: tuple) -> None:
+    async def on_react_remove(self, emoji: str, msg: discord.Message, user: discord.Member, t: tuple) -> None:
         pass
 
 
-    def react_action(self, user: discord.User, em: str, voteID: int, part: int, limit: int, msg: discord.Message) -> Union[str, tuple[str, list[int]]]:
+    def react_action(self, user: discord.Member, em: str, voteID: int, part: int, limit: int, msg: discord.Message) -> Union[str, tuple[str, list[int]]]:
         """
         Action to be taken when a reaction is added to a poll
         :param msg:
@@ -73,7 +74,7 @@ class StdVote:
             return self.count_vote(ind, user, voteID, limit)
 
 
-    def count_vote(self, ind: int, user: discord.User, vid: int, limit: int) -> str:
+    def count_vote(self, ind: int, user: discord.Member, vid: int, limit: int) -> str:
         """
         Counts a vote for ind from user
         :param ind: Index of option chosen
@@ -90,7 +91,7 @@ class StdVote:
             return "over limit"
 
 
-    async def give_feedback(self, result, user, index, vid, limit):
+    async def give_feedback(self, result, user: discord.Member, index, vid, limit):
         """
         Sends DM to user with result of reaction
         :param result: str with result of reaction
@@ -142,7 +143,7 @@ class StdVote:
         if desc is None:
             desc = self.vote_summary(args)
         else: desc = desc
-        desc += f" End the vote with `{voteDB.getPrefix(ctx.guild.id)}close {id}`."
+        if self.close_desc: desc += f" End the vote with `{voteDB.getPrefix(ctx.guild.id)}close {id}`."
 
         # Post messages and add reactions, store stage to allow resume
         messages = await self.post_vote(ctx, id, title, desc, options, creator.colour)
@@ -168,7 +169,7 @@ class StdVote:
         print("Posting")
         # Embed fields can be no longer than 1024 characters, so limit of 50 chars / option and 20 options per field
         lines = [f"{symbols[i]} {options[i]}" for i in range(len(options))]
-        if self.remove_reactions: lines.append(f"\n\n{clear_symbol} Clear all your votes")
+        if self.clear and self.remove_reactions: lines.append(f"\n\n{clear_symbol} Clear all your votes")
 
         messages = []
 

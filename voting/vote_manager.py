@@ -2,6 +2,7 @@ import discord
 from discord.ext.commands import Bot, Context
 
 from voting import voteDB
+from voting.vote_types.reaction_roles import ReactionRoles
 from voting.vote_types.std_vote import StdVote
 from voting.vote_types.stv_vote import STVVote
 from voting.vote_types.vis_vote import VisibleVote
@@ -17,6 +18,7 @@ class VoteManager:
         if t == 0: return VisibleVote(self.bot)
         elif t == 1: return StdVote(self.bot)
         elif t == 2: return STVVote(self.bot)
+        elif t == 100: return ReactionRoles(self.bot)
         else: return None
 
 
@@ -35,7 +37,13 @@ class VoteManager:
         await stv.create_vote(ctx, args)
 
 
-    async def on_reaction_add(self, r_event: discord.RawReactionActionEvent, emoji: str, message: discord.Message, user: discord.User):
+    async def reaction_roles(self, ctx, args):
+        rr = ReactionRoles(self.bot)
+        await rr.create_vote(ctx, args)
+
+
+
+    async def on_reaction_add(self, r_event: discord.RawReactionActionEvent, emoji: str, message: discord.Message, user: discord.Member):
         t = voteDB.getMsgVote(r_event.message_id)
 
         if t is None: return
@@ -46,7 +54,7 @@ class VoteManager:
         print(t, v)
         if v: await v.on_react_add(emoji, message, user, t)
 
-    async def on_reaction_remove(self, r_event: discord.RawReactionActionEvent, emoji: str, message: discord.Message, user: discord.User):
+    async def on_reaction_remove(self, r_event: discord.RawReactionActionEvent, emoji: str, message: discord.Message, user: discord.Member):
         t = voteDB.getMsgVote(r_event.message_id)
         if t is None: return
         vid, _, type, _, stage = t
