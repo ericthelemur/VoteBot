@@ -1,5 +1,6 @@
 import datetime
 import os
+from typing import Optional
 
 import discord
 from discord.ext.commands import when_mentioned_or, CommandNotFound, has_permissions, NoPrivateMessage, Bot, \
@@ -37,12 +38,16 @@ async def resume_posting():
     pass
 
 
-# Prefix set command
+# Prefix get/set command
 @has_permissions(administrator=True)
 @bot.command(name='prefix', help='Changes prefix on the server')
-async def prefix(ctx, prefix: str):
-    voteDB.setPrefix(ctx.guild.id, prefix)
-    await ctx.send(f"Prefix changed to `{prefix}`")
+async def prefix(ctx, prefix: Optional[str]):
+    if prefix is None:
+        prefix = voteDB.getPrefix(ctx.guild.id)
+        await ctx.send(f"Current prefix is `{prefix}`")
+    else:
+        voteDB.setPrefix(ctx.guild.id, prefix)
+        await ctx.send(f"Prefix changed to `{prefix}`")
 
 
 @has_permissions(administrator=True)
