@@ -1,0 +1,193 @@
+welcome_messages:
+  message: |-
+    {greetings} {name}!
+    Welcome to the server! If you want, feel free to introduce yourself here, with your interests, and favourite {thing}.
+    Get access and pronoun badges in {roles_channel}.
+  greetings:
+    - Hi
+    - Hiya
+    - Howdy
+    - Hello
+    - Greetings
+    - Welcome
+  categories:
+    - name: GENERIC
+      values:
+        - instrument
+        - movie
+        - book
+        - author
+        - actor
+        - song
+        - game
+        - piece of music
+        - artist
+        - colour
+    - name: MISC
+      values:
+        - typo
+        - punctuation mark
+        - era of history
+        - paradox
+        - unit of measurement
+        - spacecraft
+        - meme
+        - Twitch streamer
+        - Minecraft block
+        - month
+        - holiday
+        - letter of the alphabet
+        - fruit
+        - language
+        - continent
+        - flag
+        - cardinal direction
+        - planet
+        - piece of cutlery
+        - utensil
+        - ancient, modern, or natural wonder of the world
+        - font
+        - constellation
+        - type of maze
+        - Olympic sport
+        - word beginning and ending with the same letter
+        - animated character
+        - shape
+        - fact
+        - weather
+    - name: BREED
+      weight: 1
+      template: "breed of {}"
+      values:
+        - cat
+        - dog
+    - name: DRINK
+      weight: 1
+      values:
+        - drink
+        - hot drink
+        - cold drink
+    - name: MEDIUM
+      weight: 1
+      template: "genre of {}"
+      values:
+        - music
+        - film
+        - movie
+        - TV show
+        - game
+    - name: GAME_TYPE
+      weight: 1
+      template: "{} game"
+      values:
+        - video
+        - board
+        - card
+    - name: FOODSTUFF
+      weight: 1
+      template: "flavour of {}"
+      values:
+        - smoothie
+        - milkshake
+        - ice cream
+        - jam
+        - crisps
+    - name: FILLING
+      weight: 1
+      template: "{} filling"
+      values:
+        - burrito
+        - pancake
+        - strudel
+        - pie
+    - name: ANIMAL_CLASS
+      weight: 1
+      template: "species of {}"
+      values:
+        - mammal
+        - reptile
+        - amphibian
+        - fish
+        - bird
+        - lizard
+        - gastropod
+        - lemur
+    - name: PLANT_TYPE
+      weight: 1
+      template: "kind of {}"
+      values:
+        - flower
+        - tree
+        - mushroom
+        - deciduous tree
+        - evergreen tree
+        - forest
+        - house plant
+    - name: MYTHOLOGY
+      weight: 1
+      template: "{} god"
+      values:
+        - Greek
+        - Egyptian
+        - Roman
+        - Aztec
+        - Norse
+    - name: FRANCHISE
+      weight: 1
+      values:
+        - Marvel movie
+        - Harry Potter movie
+        - DC Movie
+        - superhero
+        - Pokémon
+        - Star Wars episode or spin-off
+        - episode of the Simpsons
+        - Doctor Who companion
+        - Game of Thrones character
+    - name: BRAND
+      weight: 1
+      template: "brand of {}"
+      values:
+        - cereal
+        - toothpaste
+        - games console
+    - name: FURNITURE
+      weight: 1
+      template: "type of {}"
+      values:
+        - chair
+        - sofa
+    - name: NUMBER
+      weight: 1
+      values:
+        - number
+        - positive number
+        - negative number
+        - fraction
+        - non-zero number
+    - name: BUILDING
+      weight: 1
+      values:
+        - building
+        - building with windows
+        - ancient building
+        - modern building
+        - building with a spire
+    - name: SPEECH
+      weight: 1
+      template: "thing to {}"
+      values:
+        - shout
+        - whisper
+    - name: CHEMICAL
+      weight: 1
+      values:
+        - metal alloy
+        - element
+        - chemical element
+        - ore
+    - name: CLOTHING
+      weight: 1
+      values:
+        - hat
+        - shirt

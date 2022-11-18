@@ -1,0 +1,12 @@
+MS_A1.01 | A1.01 (Zeeman)
+FAC.SS_S2.77 | FD_S2.77
+H1.48 | PS_H1.48
+C1.11 / C1.13 / C1.1 | c1.11/15
+MS.B3.03 | B3.03 (Zeeman)
+Language Centre Training Room | LN_H0.83
+A0.39 | A0.39 (Gibbet Hill)
+H0.78 | LN_H0.78
+H0.67 | LN_H0.67
+H0.82 | LN_H0.82
+H0.79 | LN_H0.79
+H0.72 | LN_H0.72

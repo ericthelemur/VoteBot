@@ -1,0 +1,1393 @@
+[
+  {
+    "name": "Arts Centre",
+    "rooms": [
+      {
+        "name": "Woods-Scawen Room",
+        "url": "woods-scawen",
+        "type": "tiered, teaching",
+        "capacity": 250
+      }
+    ]
+  },
+  {
+    "name": "Faculty of Arts",
+    "rooms": [
+      {
+        "name": "FAB0.08 Lecture Theatre 1",
+        "url": "fab008",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB0.03 Lecture Theatre 2",
+        "url": "fab003",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB0.23",
+        "url": "fab023",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.05",
+        "url": "fab105",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.06",
+        "url": "fab106",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.07",
+        "url": "fab107",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.08",
+        "url": "fab108",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.09",
+        "url": "fab109",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.10",
+        "url": "fab110",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.11",
+        "url": "fab111",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.12",
+        "url": "fab112",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.13",
+        "url": "fab113",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.14",
+        "url": "fab114",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.15",
+        "url": "fab115",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB1.37",
+        "url": "fab137",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.25",
+        "url": "fab225",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.31",
+        "url": "fab231",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.32",
+        "url": "fab232",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.33",
+        "url": "fab233",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.34",
+        "url": "fab234",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.35",
+        "url": "fab235",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.36",
+        "url": "fab236",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.43",
+        "url": "fab243",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.47",
+        "url": "fab247",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.48",
+        "url": "fab248",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB2.61",
+        "url": "fab261",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB3.25",
+        "url": "fab325",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB3.26",
+        "url": "fab326",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB3.28",
+        "url": "fab328",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB3.29",
+        "url": "fab329",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB3.30",
+        "url": "fab330",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB3.31",
+        "url": "fab331",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB3.32",
+        "url": "fab332",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB3.33",
+        "url": "fab333",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB3.35",
+        "url": "fab335",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB4.01",
+        "url": "fab401",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB4.52",
+        "url": "fab452",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB4.73",
+        "url": "fab473",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB4.74",
+        "url": "fab474",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB4.78",
+        "url": "fab478",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB4.79",
+        "url": "fab479",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB4.80",
+        "url": "fab480",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB5.01",
+        "url": "fab501",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB5.02",
+        "url": "fab502",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB5.03",
+        "url": "fab503",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB5.07",
+        "url": "fab507",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB5.30",
+        "url": "fab530",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB5.52",
+        "url": "fab552",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB6.01",
+        "url": "fab601",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB6.02",
+        "url": "fab602",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB6.03",
+        "url": "fab603",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB6.04",
+        "url": "fab604",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "FAB6.05",
+        "url": "fab605",
+        "type": "flat, teaching",
+        "capacity": 0
+      }
+    ]
+  },
+  {
+    "name": "Humanities",
+    "rooms": [
+      {
+        "name": "H0.02",
+        "url": "h002",
+        "type": "flat, teaching",
+        "capacity": 24
+      },
+      {
+        "name": "H0.03",
+        "url": "h003",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "H0.51",
+        "url": "h051",
+        "type": "tiered, teaching",
+        "capacity": 165
+      },
+      {
+        "name": "H0.52",
+        "url": "h052",
+        "type": "tiered, teaching",
+        "capacity": 165
+      },
+      {
+        "name": "H0.56",
+        "url": "h056",
+        "type": "flat, flexible",
+        "capacity": 19
+      },
+      {
+        "name": "H0.58",
+        "url": "h058",
+        "type": "flat, teaching",
+        "capacity": 50
+      },
+      {
+        "name": "H0.60",
+        "url": "h060",
+        "type": "flat, teaching",
+        "capacity": 50
+      },
+      {
+        "name": "H0.61",
+        "url": "h061",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "H0.64",
+        "url": "h064",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "H0.66",
+        "url": "h066",
+        "type": "flat, teaching",
+        "capacity": 0
+      },
+      {
+        "name": "H2.44",
+        "url": "h244",
+        "type": "flat, teaching",
+        "capacity": 25
+      }
+    ]
+  },
+  {
+    "name": "International Manufacturing Centre",
+    "rooms": [
+      {
+        "name": "IMC.002",
+        "url": "imc002",
+        "type": "flat, teaching",
+        "capacity": 200
+      }
+    ]
+  },
+  {
+    "name": "IT Access Areas",
+    "rooms": [
+      {
+        "name": "A0.01",
+        "url": "a001",
+        "type": "flat, teaching",
+        "capacity": 21
+      },
+      {
+        "name": "A0.02",
+        "url": "a002",
+        "type": "flat, teaching",
+        "capacity": 40
+      },
+      {
+        "name": "A0.03",
+        "url": "a003",
+        "type": "flat, teaching",
+        "capacity": 15
+      },
+      {
+        "name": "LS1.03",
+        "url": "ls103",
+        "type": "flat, teaching",
+        "capacity": 20
+      },
+      {
+        "name": "R0.39",
+        "url": "r039",
+        "type": "flat, teaching",
+        "capacity": 38
+      },
+      {
+        "name": "R0.41",
+        "url": "r041",
+        "type": "flat, teaching",
+        "capacity": 42
+      },
+      {
+        "name": "S2.74",
+        "url": "s274",
+        "type": "flat, teaching",
+        "capacity": 11
+      },
+      {
+        "name": "B0.52",
+        "url": "b052",
+        "type": "flat, teaching",
+        "capacity": 38
+      },
+      {
+        "name": "H4.47",
+        "url": "h447",
+        "type": "flat, teaching",
+        "capacity": 14
+      },
+      {
+        "name": "Library Floor 1",
+        "url": "libfl1",
+        "type": "flat, teaching",
+        "capacity": 89
+      },
+      {
+        "name": "Library Floor 2",
+        "url": "libfl2",
+        "type": "flat, teaching",
+        "capacity": 83
+      },
+      {
+        "name": "Library Floor 3",
+        "url": "lifl3",
+        "type": "flat, teaching",
+        "capacity": 8
+      },
+      {
+        "name": "Library Floor 5",
+        "url": "libfl5",
+        "type": "flat, teaching",
+        "capacity": 8
+      },
+      {
+        "name": "Library20min",
+        "url": "lib20m",
+        "type": "flat, teaching",
+        "capacity": 14
+      },
+      {
+        "name": "Social Sciences Cafe",
+        "url": "socscicafe",
+        "type": "flat, teaching",
+        "capacity": 3
+      },
+      {
+        "name": "Theatre Studies",
+        "url": "theatrestudies",
+        "type": "flat, teaching",
+        "capacity": 4
+      },
+      {
+        "name": "Cafe Westwood",
+        "url": "cafeww",
+        "type": "flat, teaching",
+        "capacity": 6
+      },
+      {
+        "name": "Avon Multimedia Centre",
+        "url": "avonmultimedia",
+        "type": "flat, teaching",
+        "capacity": 10
+      }
+    ]
+  },
+  {
+    "name": "Junction",
+    "rooms": [
+      {
+        "name": "JX2.02",
+        "url": "jx202",
+        "type": "flat, teaching",
+        "capacity": 28
+      },
+      {
+        "name": "JX2.03",
+        "url": "jx203",
+        "type": "flat, teaching",
+        "capacity": 28
+      }
+    ]
+  },
+  {
+    "name": "Library",
+    "rooms": [
+      {
+        "name": "Teaching Grid",
+        "url": "teachinggrid",
+        "type": "flat, teaching",
+        "capacity": 25
+      },
+      {
+        "name": "LIB 2",
+        "url": "lib2",
+        "type": "flat, teaching",
+        "capacity": 100
+      }
+    ]
+  },
+  {
+    "name": "Mathematical Sciences",
+    "rooms": [
+      {
+        "name": "MB0.07",
+        "url": "mb007",
+        "type": "flat, teaching",
+        "capacity": 50
+      },
+      {
+        "name": "MB0.08",
+        "url": "mb008",
+        "type": "flat, teaching",
+        "capacity": 24
+      }
+    ]
+  },
+  {
+    "name": "Millburn House",
+    "rooms": [
+      {
+        "name": "A0.26",
+        "url": "a026",
+        "type": "flat, teaching",
+        "capacity": 35
+      },
+      {
+        "name": "A0.28",
+        "url": "a028",
+        "type": "tiered, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "A1.25",
+        "url": "a125",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "A1.28",
+        "url": "a128",
+        "type": "flat, teaching",
+        "capacity": 32
+      },
+      {
+        "name": "F25a",
+        "url": "f25a",
+        "type": "flat, teaching",
+        "capacity": 24
+      },
+      {
+        "name": "F25b",
+        "url": "f25b",
+        "type": "flat, teaching",
+        "capacity": 15
+      }
+    ]
+  },
+  {
+    "name": "Ramphal",
+    "rooms": [
+      {
+        "name": "R0.03",
+        "url": "r003",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "R0.04",
+        "url": "r004",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "R0.12",
+        "url": "r012",
+        "type": "flat, teaching",
+        "capacity": 50
+      },
+      {
+        "name": "R0.14",
+        "url": "r014",
+        "type": "flat, teaching",
+        "capacity": 46
+      },
+      {
+        "name": "R0.21",
+        "url": "r021",
+        "type": "tiered, teaching",
+        "capacity": 400
+      },
+      {
+        "name": "R1.03",
+        "url": "r103",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "R1.04",
+        "url": "r104",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "R1.13",
+        "url": "r113",
+        "type": "flat, teaching",
+        "capacity": 50
+      },
+      {
+        "name": "R1.15",
+        "url": "r115",
+        "type": "flat, teaching",
+        "capacity": 46
+      },
+      {
+        "name": "R2.41",
+        "url": "r241",
+        "type": "flat, teaching",
+        "capacity": 40
+      },
+      {
+        "name": "R3.25",
+        "url": "r325",
+        "type": "flat, teaching",
+        "capacity": 25
+      },
+      {
+        "name": "R3.41",
+        "url": "r341",
+        "type": "flat, flexible",
+        "capacity": 32
+      }
+    ]
+  },
+  {
+    "name": "Senate House",
+    "rooms": [
+      {
+        "name": "Council Chamber",
+        "url": "councilchamber",
+        "type": "flat, teaching",
+        "capacity": 17
+      },
+      {
+        "name": "SH2.05",
+        "url": "sh205",
+        "type": "flat, teaching",
+        "capacity": 6
+      }
+    ]
+  },
+  {
+    "name": "Social Sciences",
+    "rooms": [
+      {
+        "name": "S0.08",
+        "url": "s008",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "S0.09",
+        "url": "s009",
+        "type": "flat, teaching",
+        "capacity": 35
+      },
+      {
+        "name": "S0.10",
+        "url": "s010",
+        "type": "flat, teaching",
+        "capacity": 35
+      },
+      {
+        "name": "S0.11",
+        "url": "s011",
+        "type": "tiered, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "S0.13",
+        "url": "s013",
+        "type": "tiered, teaching",
+        "capacity": 50
+      },
+      {
+        "name": "S0.17",
+        "url": "s017",
+        "type": "flat, teaching",
+        "capacity": 26
+      },
+      {
+        "name": "S0.18",
+        "url": "s018",
+        "type": "tiered, teaching",
+        "capacity": 50
+      },
+      {
+        "name": "S0.19",
+        "url": "s019",
+        "type": "tiered, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "S0.20",
+        "url": "s020",
+        "type": "tiered, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "S0.21",
+        "url": "s021",
+        "type": "tiered, teaching",
+        "capacity": 100
+      },
+      {
+        "name": "S0.28",
+        "url": "s028",
+        "type": "flat, teaching",
+        "capacity": 24
+      },
+      {
+        "name": "S0.50",
+        "url": "s050",
+        "type": "flat, teaching",
+        "capacity": 12
+      },
+      {
+        "name": "S0.52",
+        "url": "s052",
+        "type": "flat, teaching",
+        "capacity": 20
+      },
+      {
+        "name": "S1.141",
+        "url": "s1141",
+        "type": "flat, teaching",
+        "capacity": 12
+      },
+      {
+        "name": "S1.39",
+        "url": "s139",
+        "type": "flat, teaching",
+        "capacity": 20
+      },
+      {
+        "name": "S1.66",
+        "url": "s166",
+        "type": "flat, teaching",
+        "capacity": 18
+      },
+      {
+        "name": "S1.69",
+        "url": "s169",
+        "type": "flat, teaching",
+        "capacity": 17
+      },
+      {
+        "name": "S2.81",
+        "url": "s281",
+        "type": "flat, teaching",
+        "capacity": 20
+      },
+      {
+        "name": "S2.84",
+        "url": "s284",
+        "type": "flat, teaching",
+        "capacity": 18
+      },
+      {
+        "name": "A0.05",
+        "url": "a005",
+        "type": "flat, flexible",
+        "capacity": 20
+      },
+      {
+        "name": "A0.23",
+        "url": "a023",
+        "type": "tiered, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "E0.23",
+        "url": "e023",
+        "type": "flat, teaching",
+        "capacity": 20
+      },
+      {
+        "name": "c1.11/1.15",
+        "url": "c11115",
+        "type": "flat, teaching",
+        "capacity": 25
+      }
+    ]
+  },
+  {
+    "name": "Sciences",
+    "rooms": [
+      {
+        "name": "L3",
+        "url": "l3",
+        "type": "tiered, teaching",
+        "capacity": 336
+      },
+      {
+        "name": "L4",
+        "url": "l4",
+        "type": "tiered, teaching",
+        "capacity": 116
+      },
+      {
+        "name": "L5",
+        "url": "l5",
+        "type": "tiered, teaching",
+        "capacity": 116
+      },
+      {
+        "name": "B2.01",
+        "url": "b212",
+        "type": "flat, teaching",
+        "capacity": 34
+      },
+      {
+        "name": "B2.02",
+        "url": "b2078",
+        "type": "flat, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "B2.03",
+        "url": "b209",
+        "type": "flat, teaching",
+        "capacity": 20
+      },
+      {
+        "name": "B2.04/05",
+        "url": "b21314",
+        "type": "flat, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "PLT",
+        "url": "plt",
+        "type": "tiered, teaching",
+        "capacity": 165
+      },
+      {
+        "name": "PS1.28",
+        "url": "ps128",
+        "type": "flat, teaching",
+        "capacity": 76
+      },
+      {
+        "name": "P5.21",
+        "url": "p521",
+        "type": "flat, teaching",
+        "capacity": 50
+      }
+    ]
+  },
+  {
+    "name": "The Oculus",
+    "rooms": [
+      {
+        "name": "OC0.01",
+        "url": "oc001",
+        "type": "flat, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "OC0.02",
+        "url": "oc002",
+        "type": "flat, teaching",
+        "capacity": 100
+      },
+      {
+        "name": "OC0.03",
+        "url": "oc003",
+        "type": "flat, teaching",
+        "capacity": 250
+      },
+      {
+        "name": "OC0.04",
+        "url": "oc004",
+        "type": "flat, teaching",
+        "capacity": 80
+      },
+      {
+        "name": "OC0.05",
+        "url": "oc005",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "OC1.01",
+        "url": "oc101",
+        "type": "flat, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "OC1.02",
+        "url": "oc102",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "OC1.03",
+        "url": "oc103",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "OC1.04",
+        "url": "oc104",
+        "type": "flat, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "OC1.05",
+        "url": "oc105",
+        "type": "flat, teaching",
+        "capacity": 500
+      },
+      {
+        "name": "OC1.06",
+        "url": "oc106",
+        "type": "flat, teaching",
+        "capacity": 60
+      },
+      {
+        "name": "OC1.07",
+        "url": "oc107",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "OC1.08",
+        "url": "oc108",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "OC1.09",
+        "url": "oc109",
+        "type": "flat, teaching",
+        "capacity": 60
+      }
+    ]
+  },
+  {
+    "name": "Zeeman",
+    "rooms": [
+      {
+        "name": "MS.01",
+        "url": "ms01",
+        "type": "tiered, teaching",
+        "capacity": 270
+      },
+      {
+        "name": "MS.02",
+        "url": "ms02",
+        "type": "tiered, teaching",
+        "capacity": 370
+      },
+      {
+        "name": "MS.03",
+        "url": "ms03",
+        "type": "tiered, teaching",
+        "capacity": 85
+      },
+      {
+        "name": "MS.04",
+        "url": "ms04",
+        "type": "tiered, teaching",
+        "capacity": 75
+      },
+      {
+        "name": "MS.05",
+        "url": "ms05",
+        "type": "tiered, teaching",
+        "capacity": 75
+      },
+      {
+        "name": "MS.B3.03",
+        "url": "msb303",
+        "type": "tiered, teaching",
+        "capacity": 80
+      },
+      {
+        "name": "MS.A1.01",
+        "url": "msa101",
+        "type": "tiered, teaching",
+        "capacity": 40
+      },
+      {
+        "name": "MS.D0.06",
+        "url": "msd006",
+        "type": "flat, teaching",
+        "capacity": 20
+      }
+    ]
+  },
+  {
+    "name": "Gibbet Hill - Biotechnology",
+    "rooms": [
+      {
+        "name": "BSR1",
+        "url": "bsr1",
+        "type": "flat, teaching",
+        "capacity": 48
+      }
+    ]
+  },
+  {
+    "name": "Gibbet Hill - Medical Teaching Centre",
+    "rooms": [
+      {
+        "name": "MD0.01",
+        "url": "md001",
+        "type": "tiered, teaching",
+        "capacity": 200
+      }
+    ]
+  },
+  {
+    "name": "Gibbet Hill - Warwick Medical School",
+    "rooms": [
+      {
+        "name": "GLT1",
+        "url": "glt1",
+        "type": "tiered, teaching",
+        "capacity": 280
+      },
+      {
+        "name": "GLT2",
+        "url": "glt2",
+        "type": "tiered, teaching",
+        "capacity": 192
+      },
+      {
+        "name": "GLT3",
+        "url": "glt3",
+        "type": "flat, teaching",
+        "capacity": 91
+      },
+      {
+        "name": "GLT4",
+        "url": "glt4",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "A0.30",
+        "url": "a030",
+        "type": "flat, teaching",
+        "capacity": 52
+      },
+      {
+        "name": "A0.39",
+        "url": "a039",
+        "type": "flat, teaching",
+        "capacity": 28
+      },
+      {
+        "name": "A0.41",
+        "url": "a041",
+        "type": "flat, teaching",
+        "capacity": 52
+      },
+      {
+        "name": "A0.42",
+        "url": "a042",
+        "type": "flat, teaching",
+        "capacity": 52
+      },
+      {
+        "name": "A1.50",
+        "url": "a150",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "BSR3",
+        "url": "bsr3",
+        "type": "flat, teaching",
+        "capacity": 66
+      },
+      {
+        "name": "BSR5",
+        "url": "bsr5",
+        "type": "flat, teaching",
+        "capacity": 56
+      }
+    ]
+  },
+  {
+    "name": "Gibbet Hill - Interdisciplinary Biomedical Research",
+    "rooms": [
+      {
+        "name": "IBRB Lecture Theatre",
+        "url": "ibrblt",
+        "type": "tiered, teaching",
+        "capacity": 350
+      }
+    ]
+  },
+  {
+    "name": "Westwood - Avon Building",
+    "rooms": [
+      {
+        "name": "WA0.15a",
+        "url": "wa015a",
+        "type": "flat, teaching",
+        "capacity": 20
+      },
+      {
+        "name": "WA0.15b",
+        "url": "wa015b",
+        "type": "flat, teaching",
+        "capacity": 20
+      },
+      {
+        "name": "WA0.24",
+        "url": "wa024",
+        "type": "flat, boardroom",
+        "capacity": 56
+      },
+      {
+        "name": "WA1.01",
+        "url": "wa101",
+        "type": "flat, boardroom",
+        "capacity": 14
+      },
+      {
+        "name": "WA1.09",
+        "url": "wa109",
+        "type": "flat, teaching",
+        "capacity": 16
+      },
+      {
+        "name": "WA1.10",
+        "url": "wa110",
+        "type": "flat, boardroom",
+        "capacity": 15
+      },
+      {
+        "name": "WA1.15a",
+        "url": "wa115a",
+        "type": "flat, boardroom",
+        "capacity": 20
+      },
+      {
+        "name": "WA1.15b",
+        "url": "wa115b",
+        "type": "flat, boardroom",
+        "capacity": 20
+      },
+      {
+        "name": "WA1.20",
+        "url": "wa120",
+        "type": "flat, boardroom",
+        "capacity": 15
+      },
+      {
+        "name": "Avon Drama Studio",
+        "url": "avondramastudio",
+        "type": "flat, teaching",
+        "capacity": 60
+      }
+    ]
+  },
+  {
+    "name": "Westwood - Cafe Aroma",
+    "rooms": [
+      {
+        "name": "Westwood Computer Room",
+        "url": "cafeww",
+        "type": "flat, teaching",
+        "capacity": 40
+      }
+    ]
+  },
+  {
+    "name": "Westwood - Lifelong Learning",
+    "rooms": [
+      {
+        "name": "WCE0.09a",
+        "url": "wce009a",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "WCE0.09b",
+        "url": "wce009b",
+        "type": "flat, boardroom",
+        "capacity": 30
+      },
+      {
+        "name": "WCE0.10",
+        "url": "wce010",
+        "type": "flat, teaching",
+        "capacity": 48
+      },
+      {
+        "name": "WCE0.12",
+        "url": "wce012",
+        "type": "flat, boardroom",
+        "capacity": 15
+      }
+    ]
+  },
+  {
+    "name": "Westwood - Music Centre",
+    "rooms": [
+      {
+        "name": "W.MUSIC 1",
+        "url": "wmusic1",
+        "type": "flat, flexible",
+        "capacity": 30
+      },
+      {
+        "name": "W.MUSIC 2",
+        "url": "wmusic2",
+        "type": "flat, flexible",
+        "capacity": 30
+      },
+      {
+        "name": "W.MUSIC 3",
+        "url": "wmusic3",
+        "type": "flat, flexible",
+        "capacity": 30
+      },
+      {
+        "name": "Westwood Dance Studio",
+        "url": "westwooddancestudio",
+        "type": "flat, teaching",
+        "capacity": 0
+      }
+    ]
+  },
+  {
+    "name": "Westwood - Westwood Teaching Centre",
+    "rooms": [
+      {
+        "name": "WT0.01",
+        "url": "wt001",
+        "type": "flat, teaching",
+        "capacity": 48
+      },
+      {
+        "name": "WT0.02",
+        "url": "wt002",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "WT0.03",
+        "url": "wt003",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "WT0.04",
+        "url": "wt004",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "WT0.05",
+        "url": "wt005",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "WT0.06",
+        "url": "wt006",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "WT1.01",
+        "url": "wt101",
+        "type": "flat, teaching",
+        "capacity": 48
+      },
+      {
+        "name": "WT1.03",
+        "url": "wt103",
+        "type": "flat, teaching",
+        "capacity": 36
+      },
+      {
+        "name": "WT1.04",
+        "url": "wt104",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "WT1.05",
+        "url": "wt105",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "WT1.06",
+        "url": "wt106",
+        "type": "flat, teaching",
+        "capacity": 30
+      },
+      {
+        "name": "WLT",
+        "url": "wlt",
+        "type": "tiered, teaching",
+        "capacity": 208
+      }
+    ]
+  },
+  {
+    "name": "Westwood - Westwood House",
+    "rooms": [
+      {
+        "name": "W0.02",
+        "url": "w002",
+        "type": "tiered, teaching",
+        "capacity": 2
+      }
+    ]
+  }
+]
