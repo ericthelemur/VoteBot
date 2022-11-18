@@ -45,15 +45,13 @@ async def reload_cogs(ctx: Context):
 
 @bot.event
 async def on_ready():
-    if CONFIG.BOT_LOGGING:
-        logging.info("Logged in as")
-        logging.info(str(bot.user))
-        logging.info("------")
+    logging.info("Logged in as")
+    logging.info(str(bot.user))
+    logging.info("------")
 
 
 async def main():
-    if CONFIG.BOT_LOGGING:
-        logging.basicConfig(level=logging.WARNING)
+    logging.basicConfig(level=logging.WARNING)
 
     async with bot:
         for extension in EXTENSIONS:

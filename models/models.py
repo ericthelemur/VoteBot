@@ -6,15 +6,11 @@ from sqlalchemy.orm import Session
 
 from config import CONFIG
 
-__all__ = ["Base", "db_session", "auto_str"]
-
-
 Base = declarative_base()
 
 engine = create_engine(CONFIG.DATABASE_CONNECTION)
-if CONFIG.SQL_LOGGING:
-    logging.basicConfig()
-    logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+logging.basicConfig()
+logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 db_session = Session(bind=engine)
 
 
