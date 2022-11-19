@@ -38,8 +38,8 @@ class CloseButton(Button):
         self.vote = vote
 
     async def callback(self, interaction: discord.Interaction):
-        user_id = interaction.user.id
-        if user_id == self.vote.owner_id:
+        user = interaction.user
+        if user.id == self.vote.owner_id:
             await interaction.message.edit(view=None)
             await self.interface.end_vote(interaction, self.vote)
             self.interface.vote_type.end(self.vote)
@@ -53,11 +53,11 @@ class MyVotesButton(Button):
         self.interface = interface
 
     async def callback(self, interaction: discord.Interaction):
-        user_id = interaction.user.id
-        votes = self.interface.vote_type.get_votes_for_user(self.vote, user_id)
+        user = interaction.user
+        votes = self.interface.vote_type.get_votes_for_user(self.vote, user)
         await self.interface.send_choice_feedback(
             interaction,
-            (user_id, self.vote.id),
+            (user.id, self.vote.id),
             "_ _",
             self.msg_title,
             votes,
@@ -76,7 +76,8 @@ class DiscordBase:
 
     def recreate_view(self, vid, msg, dvm):
         view = View()
-        msg_title = self.get_title(dvm.discord_vote.vote.title, dvm.part)
+        vote = dvm.discord_vote.vote
+        msg_title = self.get_title(vote.title, dvm.part)
         s, e = dvm.choices_start_index, dvm.choices_start_index + dvm.numb_choices
         msg_choices = (
             db_session.query(DiscordVoteChoice)
@@ -87,6 +88,10 @@ class DiscordBase:
         )
         for dvc in msg_choices:
             view.add_item(self.BtnClass(self, dvc, msg_title))
+
+        if s == 0:
+            view.add_item(CloseButton(self, vote))
+            view.add_item(MyVotesButton(self, vote, msg_title))
         return view
 
     async def create_vote(
