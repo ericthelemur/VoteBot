@@ -99,6 +99,8 @@ class DiscordBase:
     ):
         title, choices = self.parse_choices(args)
 
+        db_session.begin_nested()
+        messages = []
         try:
             # Create DB entry for vote
             user_id = ctx.author.id
@@ -117,6 +119,7 @@ class DiscordBase:
                 msg = await ctx.send(
                     content=msg_title, allowed_mentions=AllowedMentions.none()
                 )
+                messages.append(msg)
 
                 # Add msg to DB
                 start_ind, end_ind = chunk.start, chunk.end
@@ -145,11 +148,14 @@ class DiscordBase:
                     view.add_item(CloseButton(self, vote_obj))
                     view.add_item(MyVotesButton(self, vote_obj, msg_title))
                 await msg.edit(view=view)
-
+                
             db_session.commit()
         except SQLAlchemyError:
             db_session.rollback()
             await ctx.send("Error creating vote")
+
+            for msg in messages:
+                await msg.delete()
             raise
 
     def get_title(self, title, msg_index):
