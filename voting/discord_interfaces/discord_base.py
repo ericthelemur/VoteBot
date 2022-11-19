@@ -23,11 +23,11 @@ class VoteButton(Button):
         self.interface = interface
 
     async def callback(self, interaction: discord.Interaction):
-        user_id = interaction.user.id
-        msg = self.interface.vote_type.vote_for(self.vote, user_id, self.dvc.choice)
-        user_votes = self.interface.vote_type.get_votes_for_user(self.vote, user_id)
+        user = interaction.user
+        msg = self.interface.vote_type.vote_for(self.vote, user, self.dvc.choice)
+        user_votes = self.interface.vote_type.get_votes_for_user(self.vote, user)
         await self.interface.send_choice_feedback(
-            interaction, (user_id, self.vote.id), msg, self.msg_title, user_votes
+            interaction, (user.id, self.vote.id), msg, self.msg_title, user_votes
         )
 
 

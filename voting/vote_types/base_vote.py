@@ -34,6 +34,7 @@ class BaseVote:
             db_session.add(new_choice)
             choice_objs.append(new_choice)
 
+        db_session.flush()
         return new_vote, choice_objs
 
     def vote_for(self, vote, user, option):
