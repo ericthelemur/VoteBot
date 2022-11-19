@@ -1,6 +1,6 @@
 config:
-  prefix: !
-  discord_token: OTUyOTA3MDM1MDE4Njc4Mjky.Yi811Q.tB0XQounu7bj_4noU9btIsu9TbY
-  admin_role_ids: [ 884791253194141736 ]
+  prefix: "!"
+  discord_token: "TOKEN HERE"
+  admin_role_ids: [ 12345 ]
   database_connection: "sqlite:///local.sqlite3"
-  bot_secret_key: 03QjSkFgEM
+  bot_secret_key: "Some other garbage"
